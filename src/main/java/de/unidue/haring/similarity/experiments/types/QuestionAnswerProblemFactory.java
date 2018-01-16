@@ -1,8 +1,8 @@
 package de.unidue.haring.similarity.experiments.types;
 
 import java.util.Map;
+import java.util.TreeMap;
 
-import org.maltparser.core.helper.HashMap;
 
 public class QuestionAnswerProblemFactory
 {
@@ -10,7 +10,7 @@ public class QuestionAnswerProblemFactory
 
     public QuestionAnswerProblemFactory()
     {
-        qList = new HashMap<Integer, QuestionAnswerProblem>();
+        qList = new TreeMap<Integer, QuestionAnswerProblem>();
     }
 
     /**

@@ -87,6 +87,11 @@ public class Evaluator
                 sb.append(LF);
 
                 if (printProblems) {
+                    if (questionAnswerProblem.getQuestionId() == 0) {
+                        sb.append(LF);
+                        sb.append("Instance Text: " + questionAnswerProblem.getInstanceText());
+                        sb.append(LF);
+                    }
                     sb.append(LF);
                     sb.append("Question: " + questionAnswerProblem.getQuestionText());
                     sb.append(LF);
