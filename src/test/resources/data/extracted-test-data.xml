@@ -1,0 +1,101 @@
+<?xml version="1.0" ?>
+<data>
+  <instance id="0">
+    <text>This past weekend, my family made so much food that there was still plenty of it going into the week. Knowing this, we chose not to make any new food, because we could still eat the leftover food from the weekend. All we would need to do was warm it up on the stove top. The stove is a gas stove, which produces a flame that, in my opinion, cooks food much better than an electric stove. On Monday after getting home from work, rather than making a new meal, my mom took some of the food that we had saved from the weekend and put it into a pan, and put that pan on the stove. She turned the gas on until the burner ignited, and left the heat on until she felt that the food was warm enough. When she ate it, she swore it was as good as it was when it was freshly made.</text>
+    <questions>
+      <question id="0" text="Where were they heating the food?">
+        <answer correct="False" id="0" text="On an electric stove."/>
+        <answer correct="True" id="1" text="On the stove/home"/>
+      </question>
+      <question id="1" text="How many people were making the food?">
+        <answer correct="True" id="0" text="Just one."/>
+        <answer correct="False" id="1" text="About 5."/>
+      </question>
+      <question id="2" text="Was it leftover from home or takeout?">
+        <answer correct="False" id="0" text="Takeout"/>
+        <answer correct="True" id="1" text="From home"/>
+      </question>
+      <question id="3" text="What is dangerous about this?">
+        <answer correct="True" id="0" text="It creates a flame to cook with and if you aren't careful, it could start a fire in your home."/>
+        <answer correct="False" id="1" text="nothing"/>
+      </question>
+      <question id="4" text="Is it hard using a gas stove?">
+        <answer correct="False" id="0" text="Yes it is."/>
+        <answer correct="True" id="1" text="No."/>
+      </question>
+      <question id="5" text="How did they like the food?">
+        <answer correct="False" id="0" text="hated it"/>
+        <answer correct="True" id="1" text="They loved it."/>
+      </question>
+      <question id="6" text="Why do you need to have a flame to cook?">
+        <answer correct="False" id="0" text="to burn it up"/>
+        <answer correct="True" id="1" text="to have the heat"/>
+      </question>
+      <question id="7" text="Were they heating leftovers?">
+        <answer correct="True" id="0" text="Yes they were reheating leftovers."/>
+        <answer correct="False" id="1" text="No,it was fresh."/>
+      </question>
+      <question id="8" text="Who was cooking in the kitchen?">
+        <answer correct="False" id="0" text="Friend"/>
+        <answer correct="True" id="1" text="Mother."/>
+      </question>
+      <question id="9" text="Who is making the food?">
+        <answer correct="True" id="0" text="The narrator's mother."/>
+        <answer correct="False" id="1" text="My father"/>
+      </question>
+      <question id="10" text="What type of food were they cooking?">
+        <answer correct="True" id="0" text="Leftovers"/>
+        <answer correct="False" id="1" text="Frozen dinner"/>
+      </question>
+      <question id="11" text="How did the food taste?">
+        <answer correct="False" id="0" text="Terrible"/>
+        <answer correct="True" id="1" text="Delicious."/>
+      </question>
+    </questions>
+  </instance>
+  <instance id="1">
+    <text>Just recently, the light in my hallway went out, and since my younger brother is afraid of sleeping in the dark, this became an unnecessary problem. In order to calm him down, my dad went to the nearest hardware store to buy a brand new light bulb. He needed to make sure that the light bulb was the right size, so he took the old, burned out light bulb with him to compare. After finding the right size bulb, he paid for it and brought it back home. He then grabbed a nearby chair so that he could stand on to reach the empty socket where the bulb would go. He had me turn off the light switch, which would make sure that he would not get electrocuted while putting the bulb on or burned when it turns on. After less than 5 minutes, he is finished screwing in the bulb. We flip the switch to see if it works, and it does. My brother was now relieved.</text>
+    <questions>
+      <question id="0" text="Why didn't they change the bulb by themselves?">
+        <answer correct="True" id="0" text="To be safe."/>
+        <answer correct="False" id="1" text="They were afraid to"/>
+      </question>
+      <question id="1" text="Did they have to buy a light bulb from the store, or did they already have one at home?">
+        <answer correct="True" id="0" text="They had to buy one from the store"/>
+        <answer correct="False" id="1" text="Had one."/>
+      </question>
+      <question id="2" text="Who changed the light bulb?">
+        <answer correct="True" id="0" text="Their father"/>
+        <answer correct="False" id="1" text="The boss."/>
+      </question>
+      <question id="3" text="Why did they cut off the power first?">
+        <answer correct="True" id="0" text="To prevent electrocution or burn"/>
+        <answer correct="False" id="1" text="To save electricity"/>
+      </question>
+      <question id="4" text="Where did they get a new light bulb?">
+        <answer correct="False" id="0" text="From the garage"/>
+        <answer correct="True" id="1" text="From the store"/>
+      </question>
+      <question id="5" text="Did they do it by them self?">
+        <answer correct="False" id="0" text="Yes"/>
+        <answer correct="True" id="1" text="Their father helped"/>
+      </question>
+      <question id="6" text="Why didn't they wait to change the light bulb?">
+        <answer correct="True" id="0" text="Their brother was afraid of the dark"/>
+        <answer correct="False" id="1" text="Not fun."/>
+      </question>
+      <question id="7" text="How did the light bulb burn out?">
+        <answer correct="True" id="0" text="From use."/>
+        <answer correct="False" id="1" text="They were playing with it."/>
+      </question>
+      <question id="8" text="Did they have trouble changing it?">
+        <answer correct="False" id="0" text="Yes"/>
+        <answer correct="True" id="1" text="No."/>
+      </question>
+      <question id="9" text="Did they test the bulb to see if it worked after they screwed it in?">
+        <answer correct="False" id="0" text="No, they waited"/>
+        <answer correct="True" id="1" text="Yes"/>
+      </question>
+    </questions>
+  </instance>
+</data>
