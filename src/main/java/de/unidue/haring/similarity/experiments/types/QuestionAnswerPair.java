@@ -17,6 +17,9 @@ public class QuestionAnswerPair
     private List<Lemma> questionLemmas;
     private List<Lemma> answerLemmas;
 
+    private List<float[]> questionLemmasEmbeddingAnnotationsList;
+    private List<float[]> answerLemmasEmbeddingAnnotationsList;
+
     private Map<String, SemanticRelatedness> semanticRelatednessList;
 
     public QuestionAnswerPair(String questionText, String answerText, String instanceText,
@@ -27,6 +30,28 @@ public class QuestionAnswerPair
         this.answerText = answerText;
         question = new Question(instanceText, questionText, questionId, goldAnswerId);
         answer = new Answer(answerText, answerId, isCorrectAnswer);
+    }
+
+    public List<float[]> getQuestionLemmasEmbeddingAnnotationsList()
+    {
+        return questionLemmasEmbeddingAnnotationsList;
+    }
+
+    public void setQuestionLemmasEmbeddingAnnotationsList(
+            List<float[]> questionLemmasEmbeddingAnnotationsList)
+    {
+        this.questionLemmasEmbeddingAnnotationsList = questionLemmasEmbeddingAnnotationsList;
+    }
+
+    public List<float[]> getAnswerLemmasEmbeddingAnnotationsList()
+    {
+        return answerLemmasEmbeddingAnnotationsList;
+    }
+
+    public void setAnswerLemmasEmbeddingAnnotationsList(
+            List<float[]> answerLemmasEmbeddingAnnotationsList)
+    {
+        this.answerLemmasEmbeddingAnnotationsList = answerLemmasEmbeddingAnnotationsList;
     }
 
     public String getQuestionText()

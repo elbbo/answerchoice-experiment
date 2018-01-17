@@ -203,6 +203,8 @@ public class CustomXmlReader
             if (qName.equalsIgnoreCase("answer")) {
                 if (Integer.valueOf(attributes.getValue("id")) == 0) {
                     questionAnswerProblem.setAnswerText1(attributes.getValue("text"));
+                    questionAnswerProblem.setIDCorrectAnswer(
+                            Boolean.valueOf(attributes.getValue("correct")) ? 0 : 1);
                     questionAnswerPair1 = new QuestionAnswerPair(questionText,
                             attributes.getValue("text"), instanceText, questionId,
                             Boolean.valueOf(attributes.getValue("correct")) ? 0 : 1, 0,

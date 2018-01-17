@@ -23,10 +23,10 @@ import de.unidue.haring.similarity.experiments.uima_types.QuestionAnswerProblemT
 public class Evaluator
     extends CasAnnotator_ImplBase
 {
-    // private List<QuestionAnswerProblem> questionAnswerProblems;
     private List<SimilarityMeasure> similarityMeasureMethods;
 
     private SimilarityMeasureFactory similarityMeasureFactory;
+    private SimilarityMeasure defaultSimilarityMeasure;
 
     private static final String LF = System.getProperty("line.separator");
 
@@ -34,8 +34,8 @@ public class Evaluator
     public void initialize(UimaContext context) throws ResourceInitializationException
     {
         similarityMeasureFactory = new SimilarityMeasureFactory();
-        // questionAnswerProblems = new ArrayList<QuestionAnswerProblem>();
         similarityMeasureMethods = new ArrayList<SimilarityMeasure>();
+        defaultSimilarityMeasure = new SimilarityMeasure();
 
         // Initializes similarity measure methods which will be used
         similarityMeasureMethods = similarityMeasureFactory.initializeSimilarityMeasureMethods();
@@ -47,6 +47,7 @@ public class Evaluator
         try {
             // Gets current QuestionAnswerProblem instance
             QuestionAnswerProblem questionAnswerProblem = getCurrentQuestionAnswerProblem(aCAS);
+            defaultSimilarityMeasure.prepareQuestionAnswerPairs(aCAS, questionAnswerProblem);
 
             for (SimilarityMeasure similarityMeasure : similarityMeasureMethods) {
                 similarityMeasure.measureSimilarity(aCAS, questionAnswerProblem);
@@ -65,7 +66,7 @@ public class Evaluator
         System.out.println(results);
     }
 
-    private String getEvaluationResults(boolean printProblems)
+    private String getEvaluationResults(boolean printDetailedProblems)
     {
         Map<Integer, QuestionAnswerProblem> questionAnswerProblems = QuestionAnswerProblemFactory
                 .getQuestionAnswerProblems();
@@ -75,45 +76,42 @@ public class Evaluator
             int totalAnsweredQuestions = 0;
             int correctAnsweredQuestions = 0;
             boolean isCorrect;
+            String similarityMeasureMethodName = similarityMeasure.getMeasureMethodName();
+            
             sb.append(LF);
-            sb.append("Measure Method: " + similarityMeasure.getMeasureMethodName());
+            sb.append("Measure Method: " + similarityMeasureMethodName);
             sb.append(LF);
 
             for (Entry<Integer, QuestionAnswerProblem> entry : questionAnswerProblems.entrySet()) {
                 totalAnsweredQuestions++;
                 QuestionAnswerProblem questionAnswerProblem = entry.getValue();
-                sb.append(LF);
-                sb.append("Problem nr: " + entry.getKey());
-                sb.append(LF);
+                // Checks if the answer prediction is correct
+                isCorrect = isCorrectAnswer(similarityMeasure, questionAnswerProblem);
+                if (isCorrect)
+                    correctAnsweredQuestions++;
 
-                if (printProblems) {
+                if (printDetailedProblems) {
                     if (questionAnswerProblem.getQuestionId() == 0) {
                         sb.append(LF);
                         sb.append("Instance Text: " + questionAnswerProblem.getInstanceText());
                         sb.append(LF);
                     }
                     sb.append(LF);
-                    sb.append("Question: " + questionAnswerProblem.getQuestionText());
-                    sb.append(LF);
-                    sb.append("Answer 1: " + questionAnswerProblem.getAnswerText1());
-                    sb.append(LF);
-                    sb.append("Answer 2: " + questionAnswerProblem.getAnswerText2());
-                    sb.append(LF);
+                    sb.append("Problem nr: " + entry.getKey() + " / Nr correct answer : " + Integer.valueOf(questionAnswerProblem.getIDCorrectAnswer() + 1));sb.append(LF);
+                    sb.append("Question text: " + questionAnswerProblem.getQuestionText());sb.append(LF);
+                    sb.append("Answer text 1: " + questionAnswerProblem.getAnswerText1());sb.append(LF);
+                    sb.append("Answer text 2: " + questionAnswerProblem.getAnswerText2());sb.append(LF);
+                    sb.append("Prediction value for answer 1: " + String.format("%.4f.", Double.valueOf(
+                            questionAnswerProblem.getPair1().getRelatedness(similarityMeasureMethodName).getSemanticRelatednessValue())));sb.append(LF);
+                    sb.append("Prediction value for answer 2: " + String.format("%.4f.", Double.valueOf(
+                            questionAnswerProblem.getPair2().getRelatedness(similarityMeasureMethodName).getSemanticRelatednessValue())));sb.append(LF);
+                    sb.append("Accurate Prediction: " + isCorrect);sb.append(LF);        
                 }
-
-                sb.append(LF);
-                isCorrect = isCorrectAnswer(similarityMeasure, questionAnswerProblem);
-                if (isCorrect)
-                    correctAnsweredQuestions++;
-                sb.append("Correct answered: " + String.valueOf(isCorrect));
-                sb.append(LF);
             }
             sb.append(LF);
-            sb.append("Total answered Questions: " + totalAnsweredQuestions);
-            sb.append(LF);
-            sb.append("Correct answered Questions: " + correctAnsweredQuestions);
-            sb.append(LF);
-            sb.append("Score: " + String.format("%.2f%%.", Float.valueOf(
+            sb.append("Total answered Questions: " + totalAnsweredQuestions);sb.append(LF);
+            sb.append("Correct answered Questions: " + correctAnsweredQuestions);sb.append(LF);
+            sb.append("Score / Accuracy: " + String.format("%.2f%%.", Float.valueOf(
                     ((float) correctAnsweredQuestions / (float) totalAnsweredQuestions) * 100)));
             sb.append(LF);
         }
@@ -124,7 +122,6 @@ public class Evaluator
     private boolean isCorrectAnswer(SimilarityMeasure similarityMeasure,
             QuestionAnswerProblem questionAnswerProblem)
     {
-        questionAnswerProblem.getIDCorrectAnswer();
         SemanticRelatedness semanticRelatednessPair1 = questionAnswerProblem.getPair1()
                 .getRelatedness(similarityMeasure.getMeasureMethodName());
         SemanticRelatedness semanticRelatednessPair2 = questionAnswerProblem.getPair2()

@@ -23,12 +23,12 @@ public class Pipeline
 
     public static void main(String[] args) throws Exception
     {
-//        CollectionReader xmlReader = createReader(CustomXmlReader.class, "TestDataInputFile",
-//                "src/test/resources/data/extracted-test-data.xml");
+        // CollectionReader xmlReader = createReader(CustomXmlReader.class, "TestDataInputFile",
+        // "src/test/resources/data/extracted-test-data.xml");
         CollectionReader xmlReader = createReader(CustomXmlReader.class, "TestDataInputFile",
                 "src/test/resources/data/dev-data.xml");
-//        AnalysisEngineDescription nlpSegmenter = createEngineDescription(OpenNlpSegmenter.class);
-        
+        // AnalysisEngineDescription nlpSegmenter = createEngineDescription(OpenNlpSegmenter.class);
+
         AnalysisEngineDescription stanfordSegmenter = createEngineDescription(
                 StanfordSegmenter.class, StanfordSegmenter.PARAM_LANGUAGE, "en",
                 StanfordSegmenter.PARAM_BOUNDARY_TOKEN_REGEX, "#",
@@ -38,7 +38,7 @@ public class Pipeline
         builder.add(stanfordSegmenter, CustomXmlReader.INITIAL_VIEW, CustomXmlReader.ANSWER_VIEW_1);
         builder.add(stanfordSegmenter, CustomXmlReader.INITIAL_VIEW, CustomXmlReader.ANSWER_VIEW_2);
         AnalysisEngineDescription aggr_seg = builder.createAggregateDescription();
-        
+
         AnalysisEngineDescription posTagger = createEngineDescription(OpenNlpPosTagger.class,
                 OpenNlpPosTagger.PARAM_LANGUAGE, "en");
         builder = new AggregateBuilder();
@@ -68,24 +68,21 @@ public class Pipeline
                 "src/test/resources/embeddings/embeddings_test.txt",
                 MalletEmbeddingsAnnotator.PARAM_ANNOTATE_UNKNOWN_TOKENS, true);
         builder = new AggregateBuilder();
-        builder.add(malletEmbeddingsAnnotator, CustomXmlReader.INITIAL_VIEW, CustomXmlReader.QUESTION_VIEW);
-        builder.add(malletEmbeddingsAnnotator, CustomXmlReader.INITIAL_VIEW, CustomXmlReader.ANSWER_VIEW_1);
-        builder.add(malletEmbeddingsAnnotator, CustomXmlReader.INITIAL_VIEW, CustomXmlReader.ANSWER_VIEW_2);
+        builder.add(malletEmbeddingsAnnotator, CustomXmlReader.INITIAL_VIEW,
+                CustomXmlReader.QUESTION_VIEW);
+        builder.add(malletEmbeddingsAnnotator, CustomXmlReader.INITIAL_VIEW,
+                CustomXmlReader.ANSWER_VIEW_1);
+        builder.add(malletEmbeddingsAnnotator, CustomXmlReader.INITIAL_VIEW,
+                CustomXmlReader.ANSWER_VIEW_2);
         AnalysisEngineDescription aggr_mal = builder.createAggregateDescription();
 
-//        AnalysisEngineDescription customAnnotator = createEngineDescription(CustomClassifier.class);
+        // AnalysisEngineDescription customAnnotator =
+        // createEngineDescription(CustomClassifier.class);
 
         AnalysisEngineDescription evaluator = createEngineDescription(Evaluator.class);
 
-        SimplePipeline.runPipeline(
-                xmlReader, 
-                aggr_seg,
-                aggr_stpwords,
-                aggr_pos,
-                aggr_lem,
-                aggr_mal,
-//              customAnnotator
-                evaluator
-                );
+        SimplePipeline.runPipeline(xmlReader, aggr_seg, aggr_stpwords, aggr_pos, aggr_lem, aggr_mal,
+                // customAnnotator
+                evaluator);
     }
 }

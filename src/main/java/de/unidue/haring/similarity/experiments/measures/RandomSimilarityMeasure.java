@@ -18,37 +18,24 @@ public class RandomSimilarityMeasure
     public QuestionAnswerProblem measureSimilarity(CAS aCAS,
             QuestionAnswerProblem questionAnswerProblem)
     {
-        try {
-            CAS questionView = aCAS.getView(CustomXmlReader.QUESTION_VIEW);
-            JCas qJCas = questionView.getJCas();
-            CAS answerView1 = aCAS.getView(CustomXmlReader.ANSWER_VIEW_1);
-            JCas a1JCas = answerView1.getJCas();
-            CAS answerView2 = aCAS.getView(CustomXmlReader.ANSWER_VIEW_2);
-            JCas a2JCas = answerView2.getJCas();
+        QuestionAnswerPair questionAnswerPair1 = questionAnswerProblem.getPair1();
+        QuestionAnswerPair questionAnswerPair2 = questionAnswerProblem.getPair2();
 
-            super.prepareQuestionAnswerPairs(questionAnswerProblem, qJCas, a1JCas, a2JCas);
-            QuestionAnswerPair questionAnswerPair1 = questionAnswerProblem.getPair1();
-            QuestionAnswerPair questionAnswerPair2 = questionAnswerProblem.getPair2();
+        SemanticRelatedness semanticRelatednessPair1 = new SemanticRelatedness(
+                MEASURE_METHOD_NAME);
+        SemanticRelatedness semanticRelatednessPair2 = new SemanticRelatedness(
+                MEASURE_METHOD_NAME);
 
-            SemanticRelatedness semanticRelatednessPair1 = new SemanticRelatedness(
-                    MEASURE_METHOD_NAME);
-            SemanticRelatedness semanticRelatednessPair2 = new SemanticRelatedness(
-                    MEASURE_METHOD_NAME);
-
-            if (Math.round(Math.random()) == 1) {
-                semanticRelatednessPair1.setSemanticRelatednessValue(1.0);
-                semanticRelatednessPair2.setSemanticRelatednessValue(0.0);
-            }
-            else {
-                semanticRelatednessPair1.setSemanticRelatednessValue(0.0);
-                semanticRelatednessPair2.setSemanticRelatednessValue(1.0);
-            }
-            questionAnswerPair1.setRelatedness(semanticRelatednessPair1);
-            questionAnswerPair2.setRelatedness(semanticRelatednessPair2);
+        if (Math.round(Math.random()) == 1) {
+            semanticRelatednessPair1.setSemanticRelatednessValue(1.0);
+            semanticRelatednessPair2.setSemanticRelatednessValue(0.0);
         }
-        catch (CASException e) {
-            e.printStackTrace();
+        else {
+            semanticRelatednessPair1.setSemanticRelatednessValue(0.0);
+            semanticRelatednessPair2.setSemanticRelatednessValue(1.0);
         }
+        questionAnswerPair1.setRelatedness(semanticRelatednessPair1);
+        questionAnswerPair2.setRelatedness(semanticRelatednessPair2);
         return questionAnswerProblem;
     }
 
