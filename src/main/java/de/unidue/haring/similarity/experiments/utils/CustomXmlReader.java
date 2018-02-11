@@ -51,6 +51,7 @@ public class CustomXmlReader
     private static String PUNCTUATION_PATTERN = "(?!\')\\p{Punct}";
 
     public static final String INITIAL_VIEW = "_InitialView";
+    public static final String INSTANCE_VIEW = "InstanceView";
     public static final String QUESTION_VIEW = "QuestionView";
     public static final String ANSWER_VIEW_1 = "AnswerView1";
     public static final String ANSWER_VIEW_2 = "AnswerView2";
@@ -114,11 +115,15 @@ public class CustomXmlReader
 
             // Create views for pipeline processing
             JCas jcas = aCAS.getJCas();
+            JCas instanceView = jcas.createView(INSTANCE_VIEW);
             JCas questionView = jcas.createView(QUESTION_VIEW);
             JCas answerView1 = jcas.createView(ANSWER_VIEW_1);
             JCas answerView2 = jcas.createView(ANSWER_VIEW_2);
 
             // Adds document text to views
+            instanceView.setDocumentText(preprocessInput(instanceText));
+            instanceView.setDocumentLanguage(LANGUAGE);
+            
             questionView.setDocumentText(preprocessInput(questionText));
             questionView.setDocumentLanguage(LANGUAGE);
 

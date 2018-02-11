@@ -28,8 +28,8 @@ public class SimilarityMeasure
     public QuestionAnswerProblem measureSimilarity(CAS aCas,
             QuestionAnswerProblem questionAnswerProblem)
     {
-        System.out.println("Default similarity measure");
-        return null;
+        System.out.println("Default similarity measure.");
+        return questionAnswerProblem;
     }
 
     /**
@@ -43,6 +43,8 @@ public class SimilarityMeasure
     public void prepareQuestionAnswerPairs(CAS aCAS, QuestionAnswerProblem questionAnswerProblem)
     {
         try {
+            CAS instanceView = aCAS.getView(CustomXmlReader.INSTANCE_VIEW);
+            JCas iJCas = instanceView.getJCas();
             CAS questionView = aCAS.getView(CustomXmlReader.QUESTION_VIEW);
             JCas qJCas = questionView.getJCas();
             CAS answerView1 = aCAS.getView(CustomXmlReader.ANSWER_VIEW_1);
@@ -50,7 +52,7 @@ public class SimilarityMeasure
             CAS answerView2 = aCAS.getView(CustomXmlReader.ANSWER_VIEW_2);
             JCas a2JCas = answerView2.getJCas();
 
-            prepareQuestionAnswerPairs(questionAnswerProblem, qJCas, a1JCas, a2JCas);
+            prepareQuestionAnswerPairs(questionAnswerProblem, iJCas, qJCas, a1JCas, a2JCas);
         }
         catch (CASException e) {
             e.printStackTrace();
@@ -70,24 +72,43 @@ public class SimilarityMeasure
      * @param a2JCas
      *            the JCas representing the AnswerView2
      */
-    private void prepareQuestionAnswerPairs(QuestionAnswerProblem questionAnswerProblem, JCas qJCas,
-            JCas a1JCas, JCas a2JCas)
+    private void prepareQuestionAnswerPairs(QuestionAnswerProblem questionAnswerProblem, JCas iCas,
+            JCas qJCas, JCas a1JCas, JCas a2JCas)
     {
-        setQuestionAnswerPairLemmas(questionAnswerProblem.getPair1(), qJCas, a1JCas);
-        setQuestionAnswerPairLemmas(questionAnswerProblem.getPair2(), qJCas, a2JCas);
+        setQuestionAnswerPairAnnotations(questionAnswerProblem.getPair1(), iCas, qJCas, a1JCas);
+        setQuestionAnswerPairAnnotations(questionAnswerProblem.getPair2(), iCas, qJCas, a2JCas);
     }
 
-    private void setQuestionAnswerPairLemmas(QuestionAnswerPair questionAnswerPair,
-            JCas questionJcas, JCas answerJcas)
+    /**
+     * Sets the annotations for a QuestionAnswerPair. First, the corresponding lemmas are annotated.
+     * After that, the mallet embedding annotations are set.
+     * 
+     * @param questionAnswerPair
+     *            the question
+     * @param questionJcas
+     * @param answerJcas
+     */
+    private void setQuestionAnswerPairAnnotations(QuestionAnswerPair questionAnswerPair,
+            JCas instanceJCas, JCas questionJcas, JCas answerJcas)
     {
+        questionAnswerPair.setInstanceLemmas(getLemmaList(instanceJCas));
         questionAnswerPair.setQuestionLemmas(getLemmaList(questionJcas));
         questionAnswerPair.setAnswerLemmas(getLemmaList(answerJcas));
+        questionAnswerPair.setInstanceLemmasEmbeddingAnnotationsList(
+                getMalletEmbeddingsAnnotations(instanceJCas));
         questionAnswerPair.setQuestionLemmasEmbeddingAnnotationsList(
                 getMalletEmbeddingsAnnotations(questionJcas));
         questionAnswerPair.setAnswerLemmasEmbeddingAnnotationsList(
                 getMalletEmbeddingsAnnotations(answerJcas));
     }
 
+    /**
+     * Gets the mallet embedding annotations from jcas.
+     * 
+     * @param jCas
+     *            the jcas
+     * @return List containing all embedding annotations
+     */
     private List<float[]> getMalletEmbeddingsAnnotations(JCas jCas)
     {
         List<float[]> embeddingsAnnotationsList = new ArrayList<float[]>();
@@ -103,6 +124,13 @@ public class SimilarityMeasure
         return embeddingsAnnotationsList;
     }
 
+    /**
+     * Gets all lemmas from jcas.
+     * 
+     * @param jCas
+     *            the jcas
+     * @return List containing all lemmas
+     */
     private List<Lemma> getLemmaList(JCas jCas)
     {
         List<Lemma> lemmaList = new ArrayList<Lemma>();

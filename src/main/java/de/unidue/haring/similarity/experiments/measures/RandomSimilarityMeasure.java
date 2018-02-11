@@ -25,7 +25,7 @@ public class RandomSimilarityMeasure
                 MEASURE_METHOD_NAME);
         SemanticRelatedness semanticRelatednessPair2 = new SemanticRelatedness(
                 MEASURE_METHOD_NAME);
-
+        System.out.println("rnd");
         if (Math.round(Math.random()) == 1) {
             semanticRelatednessPair1.setSemanticRelatednessValue(1.0);
             semanticRelatednessPair2.setSemanticRelatednessValue(0.0);

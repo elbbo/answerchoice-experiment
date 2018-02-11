@@ -26,7 +26,8 @@ public class Pipeline
         // CollectionReader xmlReader = createReader(CustomXmlReader.class, "TestDataInputFile",
         // "src/test/resources/data/extracted-test-data.xml");
         CollectionReader xmlReader = createReader(CustomXmlReader.class, "TestDataInputFile",
-                "src/test/resources/data/dev-data.xml");
+                // "src/test/resources/data/dev-data.xml");
+                "src/test/resources/data/train-data.xml");
         // AnalysisEngineDescription nlpSegmenter = createEngineDescription(OpenNlpSegmenter.class);
 
         AnalysisEngineDescription stanfordSegmenter = createEngineDescription(
@@ -34,6 +35,7 @@ public class Pipeline
                 StanfordSegmenter.PARAM_BOUNDARY_TOKEN_REGEX, "#",
                 StanfordSegmenter.PARAM_TOKEN_REGEXES_TO_DISCARD, "#");
         AggregateBuilder builder = new AggregateBuilder();
+        builder.add(stanfordSegmenter, CustomXmlReader.INITIAL_VIEW, CustomXmlReader.INSTANCE_VIEW);
         builder.add(stanfordSegmenter, CustomXmlReader.INITIAL_VIEW, CustomXmlReader.QUESTION_VIEW);
         builder.add(stanfordSegmenter, CustomXmlReader.INITIAL_VIEW, CustomXmlReader.ANSWER_VIEW_1);
         builder.add(stanfordSegmenter, CustomXmlReader.INITIAL_VIEW, CustomXmlReader.ANSWER_VIEW_2);
@@ -42,6 +44,7 @@ public class Pipeline
         AnalysisEngineDescription posTagger = createEngineDescription(OpenNlpPosTagger.class,
                 OpenNlpPosTagger.PARAM_LANGUAGE, "en");
         builder = new AggregateBuilder();
+        builder.add(posTagger, CustomXmlReader.INITIAL_VIEW, CustomXmlReader.INSTANCE_VIEW);
         builder.add(posTagger, CustomXmlReader.INITIAL_VIEW, CustomXmlReader.QUESTION_VIEW);
         builder.add(posTagger, CustomXmlReader.INITIAL_VIEW, CustomXmlReader.ANSWER_VIEW_1);
         builder.add(posTagger, CustomXmlReader.INITIAL_VIEW, CustomXmlReader.ANSWER_VIEW_2);
@@ -50,6 +53,7 @@ public class Pipeline
         AnalysisEngineDescription stopWordRemover = createEngineDescription(StopWordRemover.class,
                 StopWordRemover.PARAM_MODEL_LOCATION, "src/test/resources/stopwords_en.txt");
         builder = new AggregateBuilder();
+        builder.add(stopWordRemover, CustomXmlReader.INITIAL_VIEW, CustomXmlReader.INSTANCE_VIEW);
         builder.add(stopWordRemover, CustomXmlReader.INITIAL_VIEW, CustomXmlReader.QUESTION_VIEW);
         builder.add(stopWordRemover, CustomXmlReader.INITIAL_VIEW, CustomXmlReader.ANSWER_VIEW_1);
         builder.add(stopWordRemover, CustomXmlReader.INITIAL_VIEW, CustomXmlReader.ANSWER_VIEW_2);
@@ -58,6 +62,7 @@ public class Pipeline
         AnalysisEngineDescription lemmatizer = createEngineDescription(
                 LanguageToolLemmatizer.class);
         builder = new AggregateBuilder();
+        builder.add(lemmatizer, CustomXmlReader.INITIAL_VIEW, CustomXmlReader.INSTANCE_VIEW);
         builder.add(lemmatizer, CustomXmlReader.INITIAL_VIEW, CustomXmlReader.QUESTION_VIEW);
         builder.add(lemmatizer, CustomXmlReader.INITIAL_VIEW, CustomXmlReader.ANSWER_VIEW_1);
         builder.add(lemmatizer, CustomXmlReader.INITIAL_VIEW, CustomXmlReader.ANSWER_VIEW_2);
@@ -65,9 +70,12 @@ public class Pipeline
 
         AnalysisEngineDescription malletEmbeddingsAnnotator = createEngineDescription(
                 MalletEmbeddingsAnnotator.class, MalletEmbeddingsAnnotator.PARAM_MODEL_LOCATION,
-                "src/test/resources/embeddings/embeddings_test.txt",
-                MalletEmbeddingsAnnotator.PARAM_ANNOTATE_UNKNOWN_TOKENS, true);
+                "src/test/resources/embeddings/glove.6B.300d.txt",
+                MalletEmbeddingsAnnotator.PARAM_ANNOTATE_UNKNOWN_TOKENS, true,
+                MalletEmbeddingsAnnotator.PARAM_LOWERCASE, true);
         builder = new AggregateBuilder();
+        builder.add(malletEmbeddingsAnnotator, CustomXmlReader.INITIAL_VIEW,
+                CustomXmlReader.INSTANCE_VIEW);
         builder.add(malletEmbeddingsAnnotator, CustomXmlReader.INITIAL_VIEW,
                 CustomXmlReader.QUESTION_VIEW);
         builder.add(malletEmbeddingsAnnotator, CustomXmlReader.INITIAL_VIEW,

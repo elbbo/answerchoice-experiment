@@ -14,9 +14,11 @@ public class QuestionAnswerPair
     private Question question;
     private Answer answer;
 
+    private List<Lemma> instanceLemmas;
     private List<Lemma> questionLemmas;
     private List<Lemma> answerLemmas;
 
+    private List<float[]> instanceLemmasEmbeddingAnnotationsList;
     private List<float[]> questionLemmasEmbeddingAnnotationsList;
     private List<float[]> answerLemmasEmbeddingAnnotationsList;
 
@@ -92,6 +94,27 @@ public class QuestionAnswerPair
     public void setAnswerLemmas(List<Lemma> answerLemmas)
     {
         this.answerLemmas = answerLemmas;
+    }
+
+    public List<Lemma> getInstanceLemmas()
+    {
+        return instanceLemmas;
+    }
+
+    public void setInstanceLemmas(List<Lemma> instanceLemmas)
+    {
+        this.instanceLemmas = instanceLemmas;
+    }
+
+    public List<float[]> getInstanceLemmasEmbeddingAnnotationsList()
+    {
+        return instanceLemmasEmbeddingAnnotationsList;
+    }
+
+    public void setInstanceLemmasEmbeddingAnnotationsList(
+            List<float[]> instanceLemmasEmbeddingAnnotationsList)
+    {
+        this.instanceLemmasEmbeddingAnnotationsList = instanceLemmasEmbeddingAnnotationsList;
     }
 
     public Map<String, SemanticRelatedness> getRelatednessMap()

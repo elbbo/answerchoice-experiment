@@ -8,6 +8,7 @@
 		<dkpro.core.version>${project.version}</dkpro.core.version>
 		<uima.version>2.9.0</uima.version>
 		<uimafit.version>2.2.0</uimafit.version>
+		<nd4j.version>0.9.1</nd4j.version>
 	</properties>
 	<modules>
 		<module>dl4j-asl</module>
@@ -46,8 +47,12 @@
 			</snapshots>
 		</repository>
 	</repositories>
-
 	<dependencies>
+		<dependency>
+			<groupId>org.nd4j</groupId>
+			<artifactId>nd4j-native-platform</artifactId>
+			<version>${nd4j.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.dkpro.similarity</groupId>
 			<artifactId>dkpro-similarity-algorithms-api-asl</artifactId>
@@ -159,6 +164,11 @@
 				de.tudarmstadt.ukp.dkpro.core.stanfordnlp-gpl
 			</artifactId>
 			<version>1.8.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.bytedeco</groupId>
+			<artifactId>javacpp</artifactId>
+			<version>1.4</version>
 		</dependency>
 	</dependencies>
 </project>

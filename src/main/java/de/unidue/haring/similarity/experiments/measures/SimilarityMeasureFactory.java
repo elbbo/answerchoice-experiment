@@ -9,7 +9,7 @@ public class SimilarityMeasureFactory
 
     private enum MeasureMethod
     {
-        RANDOM
+        RANDOM, QUESTION_TO_ANSWER, INSTANCE_TO_ANSWER
     };
 
     public ArrayList<SimilarityMeasure> initializeSimilarityMeasureMethods()
@@ -22,6 +22,14 @@ public class SimilarityMeasureFactory
             switch (measureMethod) {
             case RANDOM:
                 sm = new RandomSimilarityMeasure();
+                similarityMeasureMethods.add(sm);
+                break;
+            case QUESTION_TO_ANSWER:
+                sm = new QuestionToAnswerSimilarityMeasure();
+                similarityMeasureMethods.add(sm);
+                break;
+            case INSTANCE_TO_ANSWER:
+                sm = new InstanceToAnswerSimilarityMeasure();
                 similarityMeasureMethods.add(sm);
                 break;
             default:
