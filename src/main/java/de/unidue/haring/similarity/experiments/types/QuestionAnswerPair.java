@@ -1,11 +1,11 @@
 package de.unidue.haring.similarity.experiments.types;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Lemma;
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 
 public class QuestionAnswerPair
 {
@@ -17,6 +17,10 @@ public class QuestionAnswerPair
     private List<Lemma> instanceLemmas;
     private List<Lemma> questionLemmas;
     private List<Lemma> answerLemmas;
+
+    private List<Token> instanceToken;
+    private List<Token> questionToken;
+    private List<Token> answerToken;
 
     private List<float[]> instanceLemmasEmbeddingAnnotationsList;
     private List<float[]> questionLemmasEmbeddingAnnotationsList;
@@ -130,5 +134,35 @@ public class QuestionAnswerPair
     public void setRelatedness(SemanticRelatedness relatedness)
     {
         semanticRelatednessList.put(relatedness.getMeasureMethod(), relatedness);
+    }
+
+    public List<Token> getInstanceToken()
+    {
+        return instanceToken;
+    }
+
+    public void setInstanceToken(List<Token> instanceToken)
+    {
+        this.instanceToken = instanceToken;
+    }
+
+    public List<Token> getQuestionToken()
+    {
+        return questionToken;
+    }
+
+    public void setQuestionToken(List<Token> questionToken)
+    {
+        this.questionToken = questionToken;
+    }
+
+    public List<Token> getAnswerToken()
+    {
+        return answerToken;
+    }
+
+    public void setAnswerToken(List<Token> answerToken)
+    {
+        this.answerToken = answerToken;
     }
 }

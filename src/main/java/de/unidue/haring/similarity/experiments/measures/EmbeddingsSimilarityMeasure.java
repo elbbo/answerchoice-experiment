@@ -12,7 +12,7 @@ public class EmbeddingsSimilarityMeasure
     extends SimilarityMeasure
 {
     /**
-     * Computes the cosine similarity of an given QuestionAnswerPair.
+     * Computes the cosine similarity of given vector lists.
      * 
      * @param pair
      *            the QuestionAnswerPair

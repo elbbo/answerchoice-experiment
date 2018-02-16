@@ -11,9 +11,11 @@ import org.apache.uima.cas.CASException;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 
+import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Lemma;
 import de.unidue.haring.similarity.experiments.types.QuestionAnswerPair;
 import de.unidue.haring.similarity.experiments.types.QuestionAnswerProblem;
+import de.unidue.haring.similarity.experiments.types.SemanticRelatedness;
 import de.unidue.haring.similarity.experiments.utils.CustomXmlReader;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
@@ -30,6 +32,33 @@ public class SimilarityMeasure
     {
         System.out.println("Default similarity measure.");
         return questionAnswerProblem;
+    }
+
+    /**
+     * Sets the computed semantic relatedness to the given QuestionAnswerPairs.
+     * 
+     * @param relatednessName
+     *            the name of the measure method
+     * @param pair1
+     *            the QuestionAnswerPair 1
+     * @param pair2
+     *            the QuestionAnswerPair 1
+     * @param valuePair1
+     *            the computed semantic relatedness of pair 1
+     * @param valuePair2
+     *            the computed semantic relatedness of pair 2
+     */
+    protected void setSemanticRelatedness(String relatednessName, QuestionAnswerPair pair1,
+            QuestionAnswerPair pair2, double valuePair1, double valuePair2)
+    {
+        SemanticRelatedness semanticRelatednessPair1 = new SemanticRelatedness(relatednessName);
+        SemanticRelatedness semanticRelatednessPair2 = new SemanticRelatedness(relatednessName);
+
+        semanticRelatednessPair1.setSemanticRelatednessValue(valuePair1);
+        semanticRelatednessPair2.setSemanticRelatednessValue(valuePair2);
+
+        pair1.setRelatedness(semanticRelatednessPair1);
+        pair2.setRelatedness(semanticRelatednessPair2);
     }
 
     /**
@@ -91,9 +120,17 @@ public class SimilarityMeasure
     private void setQuestionAnswerPairAnnotations(QuestionAnswerPair questionAnswerPair,
             JCas instanceJCas, JCas questionJcas, JCas answerJcas)
     {
+        // Sets token annotations for QuestionAnswerPair
+        questionAnswerPair.setInstanceToken(getTokenList(instanceJCas));
+        questionAnswerPair.setQuestionToken(getTokenList(questionJcas));
+        questionAnswerPair.setAnswerToken(getTokenList(answerJcas));
+
+        // Sets lemma annotations for QuestionAnswerPair
         questionAnswerPair.setInstanceLemmas(getLemmaList(instanceJCas));
         questionAnswerPair.setQuestionLemmas(getLemmaList(questionJcas));
         questionAnswerPair.setAnswerLemmas(getLemmaList(answerJcas));
+
+        // Sets embedding annotations for QuestionAnswerPair
         questionAnswerPair.setInstanceLemmasEmbeddingAnnotationsList(
                 getMalletEmbeddingsAnnotations(instanceJCas));
         questionAnswerPair.setQuestionLemmasEmbeddingAnnotationsList(
@@ -144,6 +181,28 @@ public class SimilarityMeasure
             }
         }
         return lemmaList;
+    }
+
+    /**
+     * Gets tokens from each sentence in jCas.
+     * 
+     * @param jCas
+     *            the jcas
+     * @return List containing all tokens
+     */
+    private List<Token> getTokenList(JCas jCas)
+    {
+        List<Token> tokenList = new ArrayList<Token>();
+        Collection<Sentence> sentences = JCasUtil.select(jCas, Sentence.class);
+
+        for (Sentence s : sentences) {
+            List<Token> tokenOfSentence = JCasUtil.selectCovered(jCas, Token.class, s.getBegin(),
+                    s.getEnd());
+            for (Token token : tokenOfSentence) {
+                tokenList.add(token);
+            }
+        }
+        return tokenList;
     }
 
     @Override

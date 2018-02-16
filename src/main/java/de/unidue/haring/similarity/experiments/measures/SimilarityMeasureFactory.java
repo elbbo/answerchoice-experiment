@@ -7,30 +7,25 @@ public class SimilarityMeasureFactory
 {
     private ArrayList<SimilarityMeasure> similarityMeasureMethods;
 
-    private enum MeasureMethod
-    {
-        RANDOM, QUESTION_TO_ANSWER, INSTANCE_TO_ANSWER
-    };
-
-    public ArrayList<SimilarityMeasure> initializeSimilarityMeasureMethods()
+    public ArrayList<SimilarityMeasure> initializeSimilarityMeasureMethods(
+            String... similarityMeasures)
     {
         similarityMeasureMethods = new ArrayList<SimilarityMeasure>();
         SimilarityMeasure sm = null;
 
-        for (MeasureMethod measureMethod : MeasureMethod.values()) {
-            sm = null;
-            switch (measureMethod) {
-            case RANDOM:
-                sm = new RandomSimilarityMeasure();
-                similarityMeasureMethods.add(sm);
+        for (String similarityMeasure : similarityMeasures) {
+            switch (similarityMeasure) {
+            case "RandomSimilarityMeasure":
+                similarityMeasureMethods.add(new RandomSimilarityMeasure());
                 break;
-            case QUESTION_TO_ANSWER:
-                sm = new QuestionToAnswerSimilarityMeasure();
-                similarityMeasureMethods.add(sm);
+            case "InstanceToAnswerSimilarityMeasure":
+                similarityMeasureMethods.add(new InstanceToAnswerSimilarityMeasure());
                 break;
-            case INSTANCE_TO_ANSWER:
-                sm = new InstanceToAnswerSimilarityMeasure();
-                similarityMeasureMethods.add(sm);
+            case "QuestionToAnswerSimilarityMeasure":
+                similarityMeasureMethods.add(new QuestionToAnswerSimilarityMeasure());
+                break;
+            case "LastNounSimilarityMeasure":
+                similarityMeasureMethods.add(new LastNounSimilarityMeasure());
                 break;
             default:
                 System.out.println("No similarity measure method found");

@@ -30,6 +30,11 @@ public class Evaluator
 
     private static final String LF = System.getProperty("line.separator");
 
+    private static final String RANDOM = "RandomSimilarityMeasure";
+    private static final String INSTANCE_TO_ANSWER = "InstanceToAnswerSimilarityMeasure";
+    private static final String QUESTION_TO_ANSWER = "QuestionToAnswerSimilarityMeasure";
+    private static final String LAST_NOUN = "LastNounSimilarityMeasure";
+
     @Override
     public void initialize(UimaContext context) throws ResourceInitializationException
     {
@@ -38,7 +43,8 @@ public class Evaluator
         defaultSimilarityMeasure = new SimilarityMeasure();
 
         // Initializes similarity measure methods which will be used
-        similarityMeasureMethods = similarityMeasureFactory.initializeSimilarityMeasureMethods();
+        similarityMeasureMethods = similarityMeasureFactory.initializeSimilarityMeasureMethods(
+                RANDOM, INSTANCE_TO_ANSWER, QUESTION_TO_ANSWER, LAST_NOUN);
     }
 
     @Override
@@ -77,7 +83,7 @@ public class Evaluator
             int correctAnsweredQuestions = 0;
             boolean isCorrect;
             String similarityMeasureMethodName = similarityMeasure.getMeasureMethodName();
-            
+
             sb.append(LF);
             sb.append("Measure Method: " + similarityMeasureMethodName);
             sb.append(LF);
@@ -97,20 +103,34 @@ public class Evaluator
                         sb.append(LF);
                     }
                     sb.append(LF);
-                    sb.append("Problem nr: " + entry.getKey() + " / Nr correct answer : " + Integer.valueOf(questionAnswerProblem.getIDCorrectAnswer() + 1));sb.append(LF);
-                    sb.append("Question text: " + questionAnswerProblem.getQuestionText());sb.append(LF);
-                    sb.append("Answer text 1: " + questionAnswerProblem.getAnswerText1());sb.append(LF);
-                    sb.append("Answer text 2: " + questionAnswerProblem.getAnswerText2());sb.append(LF);
-                    sb.append("Prediction value for answer 1: " + String.format("%.4f.", Double.valueOf(
-                            questionAnswerProblem.getPair1().getRelatedness(similarityMeasureMethodName).getSemanticRelatednessValue())));sb.append(LF);
-                    sb.append("Prediction value for answer 2: " + String.format("%.4f.", Double.valueOf(
-                            questionAnswerProblem.getPair2().getRelatedness(similarityMeasureMethodName).getSemanticRelatednessValue())));sb.append(LF);
-                    sb.append("Accurate Prediction: " + isCorrect);sb.append(LF);        
+                    sb.append("Problem nr: " + entry.getKey() + " / Nr correct answer : "
+                            + Integer.valueOf(questionAnswerProblem.getIDCorrectAnswer() + 1));
+                    sb.append(LF);
+                    sb.append("Question text: " + questionAnswerProblem.getQuestionText());
+                    sb.append(LF);
+                    sb.append("Answer text 1: " + questionAnswerProblem.getAnswerText1());
+                    sb.append(LF);
+                    sb.append("Answer text 2: " + questionAnswerProblem.getAnswerText2());
+                    sb.append(LF);
+                    sb.append("Prediction value for answer 1: " + String.format("%.4f.",
+                            Double.valueOf(questionAnswerProblem.getPair1()
+                                    .getRelatedness(similarityMeasureMethodName)
+                                    .getSemanticRelatednessValue())));
+                    sb.append(LF);
+                    sb.append("Prediction value for answer 2: " + String.format("%.4f.",
+                            Double.valueOf(questionAnswerProblem.getPair2()
+                                    .getRelatedness(similarityMeasureMethodName)
+                                    .getSemanticRelatednessValue())));
+                    sb.append(LF);
+                    sb.append("Accurate Prediction: " + isCorrect);
+                    sb.append(LF);
                 }
             }
             sb.append(LF);
-            sb.append("Total answered Questions: " + totalAnsweredQuestions);sb.append(LF);
-            sb.append("Correct answered Questions: " + correctAnsweredQuestions);sb.append(LF);
+            sb.append("Total answered Questions: " + totalAnsweredQuestions);
+            sb.append(LF);
+            sb.append("Correct answered Questions: " + correctAnsweredQuestions);
+            sb.append(LF);
             sb.append("Score / Accuracy: " + String.format("%.2f%%.", Float.valueOf(
                     ((float) correctAnsweredQuestions / (float) totalAnsweredQuestions) * 100)));
             sb.append(LF);
@@ -127,7 +147,7 @@ public class Evaluator
         SemanticRelatedness semanticRelatednessPair2 = questionAnswerProblem.getPair2()
                 .getRelatedness(similarityMeasure.getMeasureMethodName());
 
-        if (semanticRelatednessPair1.getSemanticRelatednessValue() >= semanticRelatednessPair2
+        if (semanticRelatednessPair1.getSemanticRelatednessValue() > semanticRelatednessPair2
                 .getSemanticRelatednessValue()
                 && questionAnswerProblem.getPair1().getAnswer().isCorrect()) {
             return true;

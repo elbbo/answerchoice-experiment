@@ -1,18 +1,9 @@
 package de.unidue.haring.similarity.experiments.measures;
 
-import static org.nd4j.linalg.ops.transforms.Transforms.*;
-import java.util.Arrays;
-import java.util.List;
-
 import org.apache.uima.cas.CAS;
-import org.nd4j.linalg.api.ndarray.INDArray;
-import org.nd4j.linalg.api.ops.impl.accum.distances.CosineSimilarity;
-import org.nd4j.linalg.factory.Nd4j;
-import org.nd4j.linalg.ops.transforms.Transforms;
 
 import de.unidue.haring.similarity.experiments.types.QuestionAnswerPair;
 import de.unidue.haring.similarity.experiments.types.QuestionAnswerProblem;
-import de.unidue.haring.similarity.experiments.types.SemanticRelatedness;
 
 public class QuestionToAnswerSimilarityMeasure
     extends EmbeddingsSimilarityMeasure
@@ -32,17 +23,10 @@ public class QuestionToAnswerSimilarityMeasure
         double cosineSimPair2 = computeCosineSimilarity(
                 questionAnswerPair2.getQuestionLemmasEmbeddingAnnotationsList(),
                 questionAnswerPair2.getAnswerLemmasEmbeddingAnnotationsList());
-        System.out.println("Cosine QA1: " + cosineSimPair1);
-        System.out.println("Cosine QA2: " + cosineSimPair2);
 
-        SemanticRelatedness semanticRelatednessPair1 = new SemanticRelatedness(MEASURE_METHOD_NAME);
-        SemanticRelatedness semanticRelatednessPair2 = new SemanticRelatedness(MEASURE_METHOD_NAME);
-
-        semanticRelatednessPair1.setSemanticRelatednessValue(cosineSimPair1);
-        semanticRelatednessPair2.setSemanticRelatednessValue(cosineSimPair2);
-        questionAnswerPair1.setRelatedness(semanticRelatednessPair1);
-        questionAnswerPair2.setRelatedness(semanticRelatednessPair2);
-
+        setSemanticRelatedness(MEASURE_METHOD_NAME, questionAnswerPair1, questionAnswerPair2,
+                cosineSimPair1, cosineSimPair2);
+        
         return questionAnswerProblem;
     }
 

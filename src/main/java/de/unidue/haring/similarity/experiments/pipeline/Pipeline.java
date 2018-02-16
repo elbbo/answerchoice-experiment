@@ -12,7 +12,6 @@ import org.apache.uima.fit.pipeline.SimplePipeline;
 import de.tudarmstadt.ukp.dkpro.core.languagetool.LanguageToolLemmatizer;
 import de.tudarmstadt.ukp.dkpro.core.mallet.wordembeddings.MalletEmbeddingsAnnotator;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
-import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpSegmenter;
 import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordSegmenter;
 import de.tudarmstadt.ukp.dkpro.core.stopwordremover.StopWordRemover;
 import de.unidue.haring.similarity.experiments.utils.CustomXmlReader;
@@ -26,9 +25,7 @@ public class Pipeline
         // CollectionReader xmlReader = createReader(CustomXmlReader.class, "TestDataInputFile",
         // "src/test/resources/data/extracted-test-data.xml");
         CollectionReader xmlReader = createReader(CustomXmlReader.class, "TestDataInputFile",
-                // "src/test/resources/data/dev-data.xml");
-                "src/test/resources/data/train-data.xml");
-        // AnalysisEngineDescription nlpSegmenter = createEngineDescription(OpenNlpSegmenter.class);
+                "src/test/resources/data/test-data.xml");
 
         AnalysisEngineDescription stanfordSegmenter = createEngineDescription(
                 StanfordSegmenter.class, StanfordSegmenter.PARAM_LANGUAGE, "en",
@@ -71,6 +68,9 @@ public class Pipeline
         AnalysisEngineDescription malletEmbeddingsAnnotator = createEngineDescription(
                 MalletEmbeddingsAnnotator.class, MalletEmbeddingsAnnotator.PARAM_MODEL_LOCATION,
                 "src/test/resources/embeddings/glove.6B.300d.txt",
+                // "src/test/resources/embeddings/glove.42B.300d.txt",
+                // "src/test/resources/embeddings/GoogleNews-vectors-negative300.txt",
+                MalletEmbeddingsAnnotator.PARAM_MODEL_IS_BINARY, false,
                 MalletEmbeddingsAnnotator.PARAM_ANNOTATE_UNKNOWN_TOKENS, true,
                 MalletEmbeddingsAnnotator.PARAM_LOWERCASE, true);
         builder = new AggregateBuilder();
