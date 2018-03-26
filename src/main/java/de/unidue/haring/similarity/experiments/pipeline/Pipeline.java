@@ -3,29 +3,33 @@ package de.unidue.haring.similarity.experiments.pipeline;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReader;
 
-import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.fit.factory.AggregateBuilder;
 import org.apache.uima.fit.pipeline.SimplePipeline;
 
 import de.tudarmstadt.ukp.dkpro.core.languagetool.LanguageToolLemmatizer;
-import de.tudarmstadt.ukp.dkpro.core.mallet.wordembeddings.MalletEmbeddingsAnnotator;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordSegmenter;
 import de.tudarmstadt.ukp.dkpro.core.stopwordremover.StopWordRemover;
+import de.unidue.haring.similarity.experiments.customAnnotators.CustomMalletEmbeddingsAnnotator;
 import de.unidue.haring.similarity.experiments.utils.CustomXmlReader;
 import de.unidue.haring.similarity.experiments.utils.Evaluator;
+import de.unidue.haring.similarity.experiments.utils.GeneralPipelineUtils;
 
 public class Pipeline
 {
-
     public static void main(String[] args) throws Exception
     {
         // CollectionReader xmlReader = createReader(CustomXmlReader.class, "TestDataInputFile",
         // "src/test/resources/data/extracted-test-data.xml");
         CollectionReader xmlReader = createReader(CustomXmlReader.class, "TestDataInputFile",
                 "src/test/resources/data/test-data.xml");
+        GeneralPipelineUtils.setFileName("test_words.txt");
+        // "src/test/resources/data/train-data.xml");
+        // GeneralPipelineUtils.setFileName("train_words.txt");
+        // "src/test/resources/data/dev-data.xml");
+        // GeneralPipelineUtils.setFileName("dev_words.txt");
 
         AnalysisEngineDescription stanfordSegmenter = createEngineDescription(
                 StanfordSegmenter.class, StanfordSegmenter.PARAM_LANGUAGE, "en",
@@ -66,13 +70,15 @@ public class Pipeline
         AnalysisEngineDescription aggr_lem = builder.createAggregateDescription();
 
         AnalysisEngineDescription malletEmbeddingsAnnotator = createEngineDescription(
-                MalletEmbeddingsAnnotator.class, MalletEmbeddingsAnnotator.PARAM_MODEL_LOCATION,
+                CustomMalletEmbeddingsAnnotator.class,
+                CustomMalletEmbeddingsAnnotator.PARAM_MODEL_LOCATION,
                 "src/test/resources/embeddings/glove.6B.300d.txt",
                 // "src/test/resources/embeddings/glove.42B.300d.txt",
                 // "src/test/resources/embeddings/GoogleNews-vectors-negative300.txt",
-                MalletEmbeddingsAnnotator.PARAM_MODEL_IS_BINARY, false,
-                MalletEmbeddingsAnnotator.PARAM_ANNOTATE_UNKNOWN_TOKENS, true,
-                MalletEmbeddingsAnnotator.PARAM_LOWERCASE, true);
+                CustomMalletEmbeddingsAnnotator.PARAM_MODEL_IS_BINARY, false,
+                CustomMalletEmbeddingsAnnotator.PARAM_ANNOTATE_UNKNOWN_TOKENS, true,
+                CustomMalletEmbeddingsAnnotator.PARAM_LOWERCASE, true,
+                CustomMalletEmbeddingsAnnotator.PARAM_ONLY_LOAD_USED_TOKENS, true);
         builder = new AggregateBuilder();
         builder.add(malletEmbeddingsAnnotator, CustomXmlReader.INITIAL_VIEW,
                 CustomXmlReader.INSTANCE_VIEW);

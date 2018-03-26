@@ -17,6 +17,7 @@ import de.unidue.haring.similarity.experiments.types.QuestionAnswerPair;
 import de.unidue.haring.similarity.experiments.types.QuestionAnswerProblem;
 import de.unidue.haring.similarity.experiments.types.SemanticRelatedness;
 import de.unidue.haring.similarity.experiments.utils.CustomXmlReader;
+import de.unidue.haring.similarity.experiments.utils.GeneralPipelineUtils;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.core.mallet.type.WordEmbedding;
@@ -153,6 +154,7 @@ public class SimilarityMeasure
         for (Sentence s : sentences) {
             List<Token> tokenOfSentence = JCasUtil.selectCovered(jCas, Token.class, s.getBegin(),
                     s.getEnd());
+            GeneralPipelineUtils.addLemmaListToUsedWordSet(tokenOfSentence);
             for (Token token : tokenOfSentence) {
                 embeddingsAnnotationsList.add(JCasUtil.selectCovered(WordEmbedding.class, token)
                         .get(0).getWordEmbedding().toArray());
@@ -177,6 +179,7 @@ public class SimilarityMeasure
             List<Token> tokenOfSentence = JCasUtil.selectCovered(jCas, Token.class, s.getBegin(),
                     s.getEnd());
             for (Token token : tokenOfSentence) {
+                GeneralPipelineUtils.addWordToUsedWordSet(token.getLemmaValue());
                 lemmaList.add(token.getLemma());
             }
         }

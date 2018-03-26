@@ -11,7 +11,6 @@ public class SimilarityMeasureFactory
             String... similarityMeasures)
     {
         similarityMeasureMethods = new ArrayList<SimilarityMeasure>();
-        SimilarityMeasure sm = null;
 
         for (String similarityMeasure : similarityMeasures) {
             switch (similarityMeasure) {

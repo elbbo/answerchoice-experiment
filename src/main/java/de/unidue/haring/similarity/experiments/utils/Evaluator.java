@@ -1,5 +1,6 @@
 package de.unidue.haring.similarity.experiments.utils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -10,11 +11,13 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.fit.component.CasAnnotator_ImplBase;
+import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import de.unidue.haring.similarity.experiments.measures.SimilarityMeasure;
 import de.unidue.haring.similarity.experiments.measures.SimilarityMeasureFactory;
+import de.unidue.haring.similarity.experiments.types.QuestionAnswerPair;
 import de.unidue.haring.similarity.experiments.types.QuestionAnswerProblem;
 import de.unidue.haring.similarity.experiments.types.QuestionAnswerProblemFactory;
 import de.unidue.haring.similarity.experiments.types.SemanticRelatedness;
@@ -34,6 +37,8 @@ public class Evaluator
     private static final String INSTANCE_TO_ANSWER = "InstanceToAnswerSimilarityMeasure";
     private static final String QUESTION_TO_ANSWER = "QuestionToAnswerSimilarityMeasure";
     private static final String LAST_NOUN = "LastNounSimilarityMeasure";
+
+    private static final boolean LEMMATA_TO_FILE = false;
 
     @Override
     public void initialize(UimaContext context) throws ResourceInitializationException
@@ -68,8 +73,12 @@ public class Evaluator
     public void collectionProcessComplete() throws AnalysisEngineProcessException
     {
         super.collectionProcessComplete();
-        String results = getEvaluationResults(true);
+        String results = getEvaluationResults(false);
         System.out.println(results);
+        
+        if (LEMMATA_TO_FILE) {
+            GeneralPipelineUtils.writeUsedWordsToFile();
+        }
     }
 
     private String getEvaluationResults(boolean printDetailedProblems)
@@ -95,6 +104,8 @@ public class Evaluator
                 isCorrect = isCorrectAnswer(similarityMeasure, questionAnswerProblem);
                 if (isCorrect)
                     correctAnsweredQuestions++;
+
+                // debugPrint(questionAnswerProblem);
 
                 if (printDetailedProblems) {
                     if (questionAnswerProblem.getQuestionId() == 0) {
@@ -175,29 +186,26 @@ public class Evaluator
         return QuestionAnswerProblemFactory.getQuestionAnswerProblemById(
                 goldQuestionAnswerProblem.getQuestionAnswerProblemId());
     }
-}
 
-// CAS view;
-// JCas JCas;
-// Collection<Sentence> sentences;
-//
-// Iterator<CAS> it = aCas.getViewIterator();
-// while (it.hasNext()) {
-// view = it.next();
-// JCas = view.getJCas();
-//
-// sentences = JCasUtil.select(JCas, Sentence.class);
-// for (Sentence s : sentences) {
-// List<Token> tokenOfSentence = JCasUtil.selectCovered(JCas, Token.class,
-// s.getBegin(), s.getEnd());
-// for (Token token : tokenOfSentence) {
-// token.getPosValue();
-// token.getLemmaValue();
-// }
-// }
-// }
-// CAS questionView = aCAS.getView(CustomXmlReader.QUESTION_VIEW);
-// JCas qJCas = questionView.getJCas();
-// CAS answerView1 = aCAS.getView(CustomXmlReader.ANSWER_VIEW_1);
-// JCas a1JCas = answerView1.getJCas();
-// CAS answerView2 = aCAS.getView(CustomXmlReader.ANSWER_VIEW_2);
+    private void debugPrint(QuestionAnswerProblem questionAnswerProblem)
+    {
+        QuestionAnswerPair pair1 = questionAnswerProblem.getPair1();
+        QuestionAnswerPair pair2 = questionAnswerProblem.getPair2();
+        System.out.println(
+                "QuestionAnswerProblem questionText: " + questionAnswerProblem.getQuestionText());
+        System.out.println("QuestionAnswerProblem Pair1 questionText: " + pair1.getQuestionText());
+        System.out.println("QuestionAnswerProblem Pair1 questionText: " + pair2.getQuestionText());
+        System.out.println(
+                "QuestionAnswerProblem answerText1: " + questionAnswerProblem.getAnswerText1());
+        System.out.println("QuestionAnswerPair1 answerText: " + pair1.getAnswerText());
+        System.out.println(
+                "QuestionAnswerProblem answerText2: " + questionAnswerProblem.getAnswerText2());
+        System.out.println("QuestionAnswerPair2 answerText: " + pair2.getAnswerText());
+        System.out.println("QuestionAnswerProblem IDCorrectAnswer: "
+                + questionAnswerProblem.getIDCorrectAnswer());
+        System.out.println("QuestionAnswerPair1 id: " + pair1.getAnswer().getId()
+                + " answer is correct: " + pair1.getAnswer().isCorrect());
+        System.out.println("QuestionAnswerPair1 id: " + pair2.getAnswer().getId()
+                + " answer is correct: " + pair2.getAnswer().isCorrect());
+    }
+}

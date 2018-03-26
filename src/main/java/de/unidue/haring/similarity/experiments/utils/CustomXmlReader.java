@@ -86,7 +86,6 @@ public class CustomXmlReader
 
     public Progress[] getProgress()
     {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -123,7 +122,7 @@ public class CustomXmlReader
             // Adds document text to views
             instanceView.setDocumentText(preprocessInput(instanceText));
             instanceView.setDocumentLanguage(LANGUAGE);
-            
+
             questionView.setDocumentText(preprocessInput(questionText));
             questionView.setDocumentLanguage(LANGUAGE);
 
@@ -182,10 +181,12 @@ public class CustomXmlReader
         private StringBuffer accumulator = new StringBuffer(1024);
         // Text relating to the current question
         String instanceText;
-        // Current question text
+        // Current texts
         String questionText;
+
         // Current question ID, relative to current instance
         int questionId;
+        int idCorrectAnswer;
 
         @Override
         public void startElement(String uri, String localName, String qName, Attributes attributes)
@@ -200,27 +201,38 @@ public class CustomXmlReader
                 instanceText = "";
             }
             if (qName.equalsIgnoreCase("question")) {
+                // extract attributes from document
+                questionText = attributes.getValue("text");
+                
+                questionId = Integer.valueOf(attributes.getValue("id"));
+                // initialize new QuestionAnswerProblem
                 questionAnswerProblem = new QuestionAnswerProblem();
                 questionAnswerProblem.setInstanceText(instanceText);
-                questionAnswerProblem.setQuestionText(attributes.getValue("text"));
-                questionAnswerProblem.setQuestionId(Integer.valueOf(attributes.getValue("id")));
+                questionAnswerProblem.setQuestionText(questionText);
+                questionAnswerProblem.setQuestionId(questionId);
             }
             if (qName.equalsIgnoreCase("answer")) {
+                // handle answer 1
                 if (Integer.valueOf(attributes.getValue("id")) == 0) {
-                    questionAnswerProblem.setAnswerText1(attributes.getValue("text"));
-                    questionAnswerProblem.setIDCorrectAnswer(
-                            Boolean.valueOf(attributes.getValue("correct")) ? 0 : 1);
-                    questionAnswerPair1 = new QuestionAnswerPair(questionText,
-                            attributes.getValue("text"), instanceText, questionId,
-                            Boolean.valueOf(attributes.getValue("correct")) ? 0 : 1, 0,
+                    String answerText1 = attributes.getValue("text");
+                    
+                    questionAnswerProblem.setAnswerText1(answerText1);
+                    // sets id of correct answer. If attribute is true => answer1 is correct (id=0)
+                    idCorrectAnswer = Boolean.valueOf(attributes.getValue("correct")) ? 0 : 1;
+                    questionAnswerProblem.setIDCorrectAnswer(idCorrectAnswer);
+
+                    questionAnswerPair1 = new QuestionAnswerPair(questionText, answerText1,
+                            instanceText, questionId, 0, idCorrectAnswer,
                             Boolean.valueOf(attributes.getValue("correct")));
                     questionAnswerProblem.setPair1(questionAnswerPair1);
                 }
+                // handle answer 2
                 else if (Integer.valueOf(attributes.getValue("id")) == 1) {
-                    questionAnswerProblem.setAnswerText2(attributes.getValue("text"));
-                    questionAnswerPair2 = new QuestionAnswerPair(questionText,
-                            attributes.getValue("text"), instanceText, questionId,
-                            Boolean.valueOf(attributes.getValue("correct")) ? 1 : 0, 0,
+                    String answerText2 = attributes.getValue("text");
+                    
+                    questionAnswerProblem.setAnswerText2(answerText2);
+                    questionAnswerPair2 = new QuestionAnswerPair(questionText, answerText2,
+                            instanceText, questionId, 1, idCorrectAnswer,
                             Boolean.valueOf(attributes.getValue("correct")));
                     questionAnswerProblem.setPair2(questionAnswerPair2);
                 }
