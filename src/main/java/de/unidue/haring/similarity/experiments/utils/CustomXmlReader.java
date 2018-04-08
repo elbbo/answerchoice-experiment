@@ -38,6 +38,7 @@ public class CustomXmlReader
     public static final String PARAM_TEST_DATA_INPUT_FILE = "TestDataInputFile";
     @ConfigurationParameter(name = PARAM_TEST_DATA_INPUT_FILE, mandatory = true)
     private File testDataInputFile;
+    
     // The language used for processing
     private static final String LANGUAGE = "en";
 
@@ -187,6 +188,7 @@ public class CustomXmlReader
         // Current question ID, relative to current instance
         int questionId;
         int idCorrectAnswer;
+        String questionType;
 
         @Override
         public void startElement(String uri, String localName, String qName, Attributes attributes)
@@ -203,13 +205,14 @@ public class CustomXmlReader
             if (qName.equalsIgnoreCase("question")) {
                 // extract attributes from document
                 questionText = attributes.getValue("text");
-                
                 questionId = Integer.valueOf(attributes.getValue("id"));
+                questionType = attributes.getValue("type");
                 // initialize new QuestionAnswerProblem
                 questionAnswerProblem = new QuestionAnswerProblem();
                 questionAnswerProblem.setInstanceText(instanceText);
                 questionAnswerProblem.setQuestionText(questionText);
                 questionAnswerProblem.setQuestionId(questionId);
+                questionAnswerProblem.setQuestionType(questionType);
             }
             if (qName.equalsIgnoreCase("answer")) {
                 // handle answer 1

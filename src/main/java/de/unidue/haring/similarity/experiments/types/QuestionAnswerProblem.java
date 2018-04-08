@@ -6,11 +6,12 @@ public class QuestionAnswerProblem
     private String questionText;
     private int questionId;
     private int questionAnswerProblemId;
-    
+
     private String answerText1;
     private String answerText2;
-    
+
     private int IDCorrectAnswer;
+    private String questionType;
 
     private QuestionAnswerPair pair1;
     private QuestionAnswerPair pair2;
@@ -119,4 +120,13 @@ public class QuestionAnswerProblem
         this.questionAnswerProblemId = questionAnswerProblemId;
     }
 
+    public String getQuestionType()
+    {
+        return questionType;
+    }
+
+    public void setQuestionType(String questionType)
+    {
+        this.questionType = questionType;
+    }
 }

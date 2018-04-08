@@ -1,6 +1,5 @@
 package de.unidue.haring.similarity.experiments.utils;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -26,8 +25,15 @@ import de.unidue.haring.similarity.experiments.uima_types.QuestionAnswerProblemT
 public class Evaluator
     extends CasAnnotator_ImplBase
 {
+    public static final String PARAM_TEST_DATA_FILE_PATH = "TestDataFilePath";
+    @ConfigurationParameter(name = PARAM_TEST_DATA_FILE_PATH, mandatory = true)
+    private String testDataFilePath;
+    
+    public static final String PARAM_USED_WORD_EMBEDDINGS = "UsedWordEmbeddings";
+    @ConfigurationParameter(name = PARAM_USED_WORD_EMBEDDINGS, mandatory = true)
+    private String usedWordEmbeddings;
+    
     private List<SimilarityMeasure> similarityMeasureMethods;
-
     private SimilarityMeasureFactory similarityMeasureFactory;
     private SimilarityMeasure defaultSimilarityMeasure;
 
@@ -37,19 +43,22 @@ public class Evaluator
     private static final String INSTANCE_TO_ANSWER = "InstanceToAnswerSimilarityMeasure";
     private static final String QUESTION_TO_ANSWER = "QuestionToAnswerSimilarityMeasure";
     private static final String LAST_NOUN = "LastNounSimilarityMeasure";
+    private static final String JWeb1TMeasure = "JWeb1TMeasure";
 
     private static final boolean LEMMATA_TO_FILE = false;
 
     @Override
     public void initialize(UimaContext context) throws ResourceInitializationException
     {
+        super.initialize(context);
+        
         similarityMeasureFactory = new SimilarityMeasureFactory();
         similarityMeasureMethods = new ArrayList<SimilarityMeasure>();
         defaultSimilarityMeasure = new SimilarityMeasure();
 
         // Initializes similarity measure methods which will be used
         similarityMeasureMethods = similarityMeasureFactory.initializeSimilarityMeasureMethods(
-                RANDOM, INSTANCE_TO_ANSWER, QUESTION_TO_ANSWER, LAST_NOUN);
+                RANDOM, INSTANCE_TO_ANSWER, QUESTION_TO_ANSWER, LAST_NOUN, JWeb1TMeasure);
     }
 
     @Override
@@ -74,8 +83,8 @@ public class Evaluator
     {
         super.collectionProcessComplete();
         String results = getEvaluationResults(false);
-        System.out.println(results);
-        
+        GeneralPipelineUtils.printEvaluationResult(results);
+
         if (LEMMATA_TO_FILE) {
             GeneralPipelineUtils.writeUsedWordsToFile();
         }
@@ -83,15 +92,23 @@ public class Evaluator
 
     private String getEvaluationResults(boolean printDetailedProblems)
     {
+        GeneralPipelineUtils.printEvaluationResult("Pipeline was running on data: " + testDataFilePath
+                + ". Used embeddings: " + usedWordEmbeddings);
+
         Map<Integer, QuestionAnswerProblem> questionAnswerProblems = QuestionAnswerProblemFactory
                 .getQuestionAnswerProblems();
         StringBuilder sb = new StringBuilder();
 
         for (SimilarityMeasure similarityMeasure : similarityMeasureMethods) {
             int totalAnsweredQuestions = 0;
+            int totalCommonsenseQuestions = 0;
+            int correctCommonsenseQuestions = 0;
+            int totalTextQuestions = 0;
+            int correctTextQuestions = 0;
             int correctAnsweredQuestions = 0;
             boolean isCorrect;
             String similarityMeasureMethodName = similarityMeasure.getMeasureMethodName();
+            String questionType;
 
             sb.append(LF);
             sb.append("Measure Method: " + similarityMeasureMethodName);
@@ -100,13 +117,24 @@ public class Evaluator
             for (Entry<Integer, QuestionAnswerProblem> entry : questionAnswerProblems.entrySet()) {
                 totalAnsweredQuestions++;
                 QuestionAnswerProblem questionAnswerProblem = entry.getValue();
+                questionType = questionAnswerProblem.getQuestionType();
+                if (questionType.equals("commonsense")) {
+                    totalCommonsenseQuestions++;
+                }
+                else {
+                    totalTextQuestions++;
+                }
+
                 // Checks if the answer prediction is correct
                 isCorrect = isCorrectAnswer(similarityMeasure, questionAnswerProblem);
-                if (isCorrect)
+                if (isCorrect && questionType.equals("commonsense")) {
                     correctAnsweredQuestions++;
-
-                // debugPrint(questionAnswerProblem);
-
+                    correctCommonsenseQuestions++;
+                }
+                else if (isCorrect && questionType.equals("text")) {
+                    correctAnsweredQuestions++;
+                    correctTextQuestions++;
+                }
                 if (printDetailedProblems) {
                     if (questionAnswerProblem.getQuestionId() == 0) {
                         sb.append(LF);
@@ -116,6 +144,8 @@ public class Evaluator
                     sb.append(LF);
                     sb.append("Problem nr: " + entry.getKey() + " / Nr correct answer : "
                             + Integer.valueOf(questionAnswerProblem.getIDCorrectAnswer() + 1));
+                    sb.append(LF);
+                    sb.append("Question tpye: " + questionType);
                     sb.append(LF);
                     sb.append("Question text: " + questionAnswerProblem.getQuestionText());
                     sb.append(LF);
@@ -144,6 +174,23 @@ public class Evaluator
             sb.append(LF);
             sb.append("Score / Accuracy: " + String.format("%.2f%%.", Float.valueOf(
                     ((float) correctAnsweredQuestions / (float) totalAnsweredQuestions) * 100)));
+            sb.append(LF);
+            sb.append(LF);
+            sb.append("Total commonsense Questions answered: " + totalCommonsenseQuestions);
+            sb.append(LF);
+            sb.append("Correct commonsense Questions answered: " + correctCommonsenseQuestions);
+            sb.append(LF);
+            sb.append("Commonsense Score / Accuracy: " + String.format("%.2f%%.", Float.valueOf(
+                    ((float) correctCommonsenseQuestions / (float) totalCommonsenseQuestions)
+                            * 100)));
+            sb.append(LF);
+            sb.append(LF);
+            sb.append("Total text Questions answered: " + totalTextQuestions);
+            sb.append(LF);
+            sb.append("Correct text Questions answered: " + correctTextQuestions);
+            sb.append(LF);
+            sb.append("Text Score / Accuracy: " + String.format("%.2f%%.", Float
+                    .valueOf(((float) correctTextQuestions / (float) totalTextQuestions) * 100)));
             sb.append(LF);
         }
 
@@ -191,21 +238,21 @@ public class Evaluator
     {
         QuestionAnswerPair pair1 = questionAnswerProblem.getPair1();
         QuestionAnswerPair pair2 = questionAnswerProblem.getPair2();
-        System.out.println(
+        GeneralPipelineUtils.printEvaluationResult(
                 "QuestionAnswerProblem questionText: " + questionAnswerProblem.getQuestionText());
-        System.out.println("QuestionAnswerProblem Pair1 questionText: " + pair1.getQuestionText());
-        System.out.println("QuestionAnswerProblem Pair1 questionText: " + pair2.getQuestionText());
-        System.out.println(
+        GeneralPipelineUtils.printEvaluationResult("QuestionAnswerProblem Pair1 questionText: " + pair1.getQuestionText());
+        GeneralPipelineUtils.printEvaluationResult("QuestionAnswerProblem Pair1 questionText: " + pair2.getQuestionText());
+        GeneralPipelineUtils.printEvaluationResult(
                 "QuestionAnswerProblem answerText1: " + questionAnswerProblem.getAnswerText1());
-        System.out.println("QuestionAnswerPair1 answerText: " + pair1.getAnswerText());
-        System.out.println(
+        GeneralPipelineUtils.printEvaluationResult("QuestionAnswerPair1 answerText: " + pair1.getAnswerText());
+        GeneralPipelineUtils.printEvaluationResult(
                 "QuestionAnswerProblem answerText2: " + questionAnswerProblem.getAnswerText2());
-        System.out.println("QuestionAnswerPair2 answerText: " + pair2.getAnswerText());
-        System.out.println("QuestionAnswerProblem IDCorrectAnswer: "
+        GeneralPipelineUtils.printEvaluationResult("QuestionAnswerPair2 answerText: " + pair2.getAnswerText());
+        GeneralPipelineUtils.printEvaluationResult("QuestionAnswerProblem IDCorrectAnswer: "
                 + questionAnswerProblem.getIDCorrectAnswer());
-        System.out.println("QuestionAnswerPair1 id: " + pair1.getAnswer().getId()
+        GeneralPipelineUtils.printEvaluationResult("QuestionAnswerPair1 id: " + pair1.getAnswer().getId()
                 + " answer is correct: " + pair1.getAnswer().isCorrect());
-        System.out.println("QuestionAnswerPair1 id: " + pair2.getAnswer().getId()
+        GeneralPipelineUtils.printEvaluationResult("QuestionAnswerPair1 id: " + pair2.getAnswer().getId()
                 + " answer is correct: " + pair2.getAnswer().isCorrect());
     }
 }
