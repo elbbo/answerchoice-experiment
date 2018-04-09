@@ -26,9 +26,15 @@ public class SimilarityMeasureFactory
             case "LastNounSimilarityMeasure":
                 similarityMeasureMethods.add(new LastNounSimilarityMeasure());
                 break;
-            case "JWeb1TMeasure":
-                similarityMeasureMethods.add(new JWeb1TMeasure());
+            case "SimpleJWeb1TMeasure":
+                similarityMeasureMethods.add(new SimpleJWeb1TMeasure());
                 break;
+            case "HighDifferenceJWeb1TMeasure":
+                similarityMeasureMethods.add(new HighDifferenceJWeb1TMeasure());
+                break;
+            case "ConceptualJWeb1TMeasure":
+                similarityMeasureMethods.add(new ConceptualJWeb1TMeasure());
+                break; 
             default:
                 System.out.println("No similarity measure method found");
             }

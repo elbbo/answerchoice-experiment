@@ -1,3 +1,4 @@
+src/main/resources/results
 src/test/resources/embeddings
 src/test/resources/Web1t
 target/

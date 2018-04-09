@@ -28,11 +28,11 @@ public class Evaluator
     public static final String PARAM_TEST_DATA_FILE_PATH = "TestDataFilePath";
     @ConfigurationParameter(name = PARAM_TEST_DATA_FILE_PATH, mandatory = true)
     private String testDataFilePath;
-    
+
     public static final String PARAM_USED_WORD_EMBEDDINGS = "UsedWordEmbeddings";
     @ConfigurationParameter(name = PARAM_USED_WORD_EMBEDDINGS, mandatory = true)
     private String usedWordEmbeddings;
-    
+
     private List<SimilarityMeasure> similarityMeasureMethods;
     private SimilarityMeasureFactory similarityMeasureFactory;
     private SimilarityMeasure defaultSimilarityMeasure;
@@ -43,7 +43,9 @@ public class Evaluator
     private static final String INSTANCE_TO_ANSWER = "InstanceToAnswerSimilarityMeasure";
     private static final String QUESTION_TO_ANSWER = "QuestionToAnswerSimilarityMeasure";
     private static final String LAST_NOUN = "LastNounSimilarityMeasure";
-    private static final String JWeb1TMeasure = "JWeb1TMeasure";
+    private static final String SIMPLE_JWEB1T = "SimpleJWeb1TMeasure";
+    private static final String HIGH_DIFFERENCE_JWEB1T = "HighDifferenceJWeb1TMeasure";
+    private static final String CONCEPTUAL_JWEB1T = "ConceptualJWeb1TMeasure";
 
     private static final boolean LEMMATA_TO_FILE = false;
 
@@ -51,14 +53,15 @@ public class Evaluator
     public void initialize(UimaContext context) throws ResourceInitializationException
     {
         super.initialize(context);
-        
+
         similarityMeasureFactory = new SimilarityMeasureFactory();
         similarityMeasureMethods = new ArrayList<SimilarityMeasure>();
         defaultSimilarityMeasure = new SimilarityMeasure();
 
-        // Initializes similarity measure methods which will be used
+        // Initializes similarity measure methods which shell be used
         similarityMeasureMethods = similarityMeasureFactory.initializeSimilarityMeasureMethods(
-                RANDOM, INSTANCE_TO_ANSWER, QUESTION_TO_ANSWER, LAST_NOUN, JWeb1TMeasure);
+                RANDOM, INSTANCE_TO_ANSWER, QUESTION_TO_ANSWER, LAST_NOUN, SIMPLE_JWEB1T,
+                HIGH_DIFFERENCE_JWEB1T, CONCEPTUAL_JWEB1T);
     }
 
     @Override
@@ -92,8 +95,8 @@ public class Evaluator
 
     private String getEvaluationResults(boolean printDetailedProblems)
     {
-        GeneralPipelineUtils.printEvaluationResult("Pipeline was running on data: " + testDataFilePath
-                + ". Used embeddings: " + usedWordEmbeddings);
+        GeneralPipelineUtils.printEvaluationResult("Pipeline was running on data: "
+                + testDataFilePath + ". Used embeddings: " + usedWordEmbeddings);
 
         Map<Integer, QuestionAnswerProblem> questionAnswerProblems = QuestionAnswerProblemFactory
                 .getQuestionAnswerProblems();
@@ -240,19 +243,25 @@ public class Evaluator
         QuestionAnswerPair pair2 = questionAnswerProblem.getPair2();
         GeneralPipelineUtils.printEvaluationResult(
                 "QuestionAnswerProblem questionText: " + questionAnswerProblem.getQuestionText());
-        GeneralPipelineUtils.printEvaluationResult("QuestionAnswerProblem Pair1 questionText: " + pair1.getQuestionText());
-        GeneralPipelineUtils.printEvaluationResult("QuestionAnswerProblem Pair1 questionText: " + pair2.getQuestionText());
+        GeneralPipelineUtils.printEvaluationResult(
+                "QuestionAnswerProblem Pair1 questionText: " + pair1.getQuestionText());
+        GeneralPipelineUtils.printEvaluationResult(
+                "QuestionAnswerProblem Pair1 questionText: " + pair2.getQuestionText());
         GeneralPipelineUtils.printEvaluationResult(
                 "QuestionAnswerProblem answerText1: " + questionAnswerProblem.getAnswerText1());
-        GeneralPipelineUtils.printEvaluationResult("QuestionAnswerPair1 answerText: " + pair1.getAnswerText());
+        GeneralPipelineUtils
+                .printEvaluationResult("QuestionAnswerPair1 answerText: " + pair1.getAnswerText());
         GeneralPipelineUtils.printEvaluationResult(
                 "QuestionAnswerProblem answerText2: " + questionAnswerProblem.getAnswerText2());
-        GeneralPipelineUtils.printEvaluationResult("QuestionAnswerPair2 answerText: " + pair2.getAnswerText());
+        GeneralPipelineUtils
+                .printEvaluationResult("QuestionAnswerPair2 answerText: " + pair2.getAnswerText());
         GeneralPipelineUtils.printEvaluationResult("QuestionAnswerProblem IDCorrectAnswer: "
                 + questionAnswerProblem.getIDCorrectAnswer());
-        GeneralPipelineUtils.printEvaluationResult("QuestionAnswerPair1 id: " + pair1.getAnswer().getId()
-                + " answer is correct: " + pair1.getAnswer().isCorrect());
-        GeneralPipelineUtils.printEvaluationResult("QuestionAnswerPair1 id: " + pair2.getAnswer().getId()
-                + " answer is correct: " + pair2.getAnswer().isCorrect());
+        GeneralPipelineUtils
+                .printEvaluationResult("QuestionAnswerPair1 id: " + pair1.getAnswer().getId()
+                        + " answer is correct: " + pair1.getAnswer().isCorrect());
+        GeneralPipelineUtils
+                .printEvaluationResult("QuestionAnswerPair1 id: " + pair2.getAnswer().getId()
+                        + " answer is correct: " + pair2.getAnswer().isCorrect());
     }
 }
