@@ -18,6 +18,11 @@ public class LastNounSimilarityMeasure
 {
     private static final String MEASURE_METHOD_NAME = "LastNounSimilarityMeasure";
 
+    public LastNounSimilarityMeasure()
+    {
+        super();
+    }
+
     @Override
     public QuestionAnswerProblem measureSimilarity(CAS aCAS,
             QuestionAnswerProblem questionAnswerProblem)
@@ -34,7 +39,6 @@ public class LastNounSimilarityMeasure
 
         setSemanticRelatedness(MEASURE_METHOD_NAME, questionAnswerPair1, questionAnswerPair2,
                 cosineSimPair1, cosineSimPair2);
-
         return questionAnswerProblem;
     }
 
@@ -88,7 +92,7 @@ public class LastNounSimilarityMeasure
                 return null;
             }
             // If no noun was found within the token list return the last token
-            return tokenList.get(tokenList.size() -1);
+            return tokenList.get(tokenList.size() - 1);
         }
         return lastNoun;
     }

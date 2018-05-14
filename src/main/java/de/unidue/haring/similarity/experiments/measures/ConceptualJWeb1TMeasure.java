@@ -16,6 +16,10 @@ public class ConceptualJWeb1TMeasure
     
     private String questionText;
 
+    public ConceptualJWeb1TMeasure() {
+        super();
+    }
+    
     @Override
     public QuestionAnswerProblem measureSimilarity(CAS aCAS,
             QuestionAnswerProblem questionAnswerProblem)
@@ -29,36 +33,36 @@ public class ConceptualJWeb1TMeasure
         questionText = questionAnswerProblem.getQuestionText().toLowerCase();
 
         if (questionText.startsWith("when")) {
-            setEmbeddingsPrediction();
+            useInstanzeToAnswerPrediction();
         }
         else if (questionText.startsWith("how")) {
-            setWeb1TPrediction();
+            useSimpleWeb1TPrediction();
         }
         else if (questionText.startsWith("what")) {
-            setEmbeddingsPrediction();
+            useInstanzeToAnswerPrediction();
         }
         else if (questionText.startsWith("which")) {
-            setEmbeddingsPrediction();
+            useInstanzeToAnswerPrediction();
         }
         else if (questionText.startsWith("where")) {
-            setEmbeddingsPrediction();
+            useInstanzeToAnswerPrediction();
         }
         else if (questionText.startsWith("why")) {
-            setEmbeddingsPrediction();
+            useInstanzeToAnswerPrediction();
         }
         else if (questionText.startsWith("who")) {
-            setWeb1TPrediction();
+            useSimpleWeb1TPrediction();
         }
         else if (questionText.startsWith("whose")) {
-            setWeb1TPrediction();
+            useSimpleWeb1TPrediction();
         }else {
-            setEmbeddingsPrediction();
+            useInstanzeToAnswerPrediction();
         }
 
         return questionAnswerProblem;
     }
 
-    private void setEmbeddingsPrediction()
+    private void useInstanzeToAnswerPrediction()
     {
         double cosineSimPair1 = computeCosineSimilarity(
                 questionAnswerPair1.getInstanceLemmasEmbeddingAnnotationsList(),
@@ -71,7 +75,7 @@ public class ConceptualJWeb1TMeasure
                 cosineSimPair1, cosineSimPair2);
     }
 
-    private void setWeb1TPrediction()
+    private void useSimpleWeb1TPrediction()
     {
         try {
             double a1Freq = sumLemmataFrequency(questionAnswerPair1.getAnswerLemmas());

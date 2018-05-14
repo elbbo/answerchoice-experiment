@@ -1,6 +1,5 @@
 package de.unidue.haring.similarity.experiments.measures;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -20,6 +19,11 @@ public class JWeb1TMeasure
     private static long normalization;
     private static final boolean NORMALIZE_FREQUENCY = true;
 
+    public JWeb1TMeasure()
+    {
+        super();
+    }
+
     protected void initJWeb1T()
     {
         try {
@@ -27,7 +31,6 @@ public class JWeb1TMeasure
 
             aggregator = new JWeb1TAggregator(DATA_DIR, 1);
             aggregator.create();
-            final File countFile = new File(DATA_DIR, JWeb1TAggregator.AGGREGATED_COUNTS_FILE);
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -39,8 +42,7 @@ public class JWeb1TMeasure
     /**
      * Summarizes over the frequencies of the respective lemmas. Normalizes the values, if desired.
      * 
-     * @param lemmata
-     *            list containing all answer lemmata
+     * @param lemmata list containing all answer lemmata
      * @return the (normalized) frequency
      * @throws IOException
      */
@@ -65,7 +67,7 @@ public class JWeb1TMeasure
             }
         }
         if (NORMALIZE_FREQUENCY) {
-            return aFreq * -1;
+            return Math.abs(aFreq);
         }
         else {
             return aFreq;

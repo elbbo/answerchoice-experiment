@@ -11,8 +11,13 @@ public class HighDifferenceJWeb1TMeasure
     extends JWeb1TMeasure
 {
     private static final String MEASURE_METHOD_NAME = "HighDifferenceJWeb1TMeasure";
-    private static final int THRESHOLD = 30;
-    
+    private static final int THRESHOLD = 20;
+
+    public HighDifferenceJWeb1TMeasure()
+    {
+        super();
+    }
+
     @Override
     public QuestionAnswerProblem measureSimilarity(CAS aCAS,
             QuestionAnswerProblem questionAnswerProblem)

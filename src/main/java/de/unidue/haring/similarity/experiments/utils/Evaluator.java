@@ -16,7 +16,6 @@ import org.apache.uima.resource.ResourceInitializationException;
 
 import de.unidue.haring.similarity.experiments.measures.SimilarityMeasure;
 import de.unidue.haring.similarity.experiments.measures.SimilarityMeasureFactory;
-import de.unidue.haring.similarity.experiments.types.QuestionAnswerPair;
 import de.unidue.haring.similarity.experiments.types.QuestionAnswerProblem;
 import de.unidue.haring.similarity.experiments.types.QuestionAnswerProblemFactory;
 import de.unidue.haring.similarity.experiments.types.SemanticRelatedness;
@@ -48,6 +47,8 @@ public class Evaluator
     private static final String CONCEPTUAL_JWEB1T = "ConceptualJWeb1TMeasure";
 
     private static final boolean LEMMATA_TO_FILE = false;
+    private static final boolean PRINT_TABLES = false;
+    private ResultsTablePrinter rtp;
 
     @Override
     public void initialize(UimaContext context) throws ResourceInitializationException
@@ -91,16 +92,29 @@ public class Evaluator
         if (LEMMATA_TO_FILE) {
             GeneralPipelineUtils.writeUsedWordsToFile();
         }
+        if (PRINT_TABLES) {
+            rtp.printResultsTableToFile();
+            rtp.printMissingAnnotationsTableToFile();
+        }
     }
 
     private String getEvaluationResults(boolean printDetailedProblems)
     {
+        String usedData = testDataFilePath.split("/")[4].split("\\.")[0];
+        String usedEmbeddings = usedWordEmbeddings.split("/")[4];
+
         GeneralPipelineUtils.printEvaluationResult("Pipeline was running on data: "
                 + testDataFilePath + ". Used embeddings: " + usedWordEmbeddings);
 
         Map<Integer, QuestionAnswerProblem> questionAnswerProblems = QuestionAnswerProblemFactory
                 .getQuestionAnswerProblems();
         StringBuilder sb = new StringBuilder();
+
+        if (PRINT_TABLES) {
+            rtp = new ResultsTablePrinter();
+            rtp.printResultsHead();
+            rtp.printMissingAnnotationsHead();
+        }
 
         for (SimilarityMeasure similarityMeasure : similarityMeasureMethods) {
             int totalAnsweredQuestions = 0;
@@ -195,6 +209,17 @@ public class Evaluator
             sb.append("Text Score / Accuracy: " + String.format("%.2f%%.", Float
                     .valueOf(((float) correctTextQuestions / (float) totalTextQuestions) * 100)));
             sb.append(LF);
+
+            if (PRINT_TABLES) {
+                rtp.printResultsColumn(usedData, usedEmbeddings,
+                        similarityMeasure.getMeasureMethodName(), totalAnsweredQuestions,
+                        correctAnsweredQuestions, totalCommonsenseQuestions,
+                        correctCommonsenseQuestions, totalTextQuestions, correctTextQuestions);
+                rtp.printMissingAnnotationsColumn(usedData, usedEmbeddings,
+                        similarityMeasure.getMeasureMethodName(),
+                        similarityMeasure.getMissingEmbeddingsAnnotation(),
+                        similarityMeasure.getTotalTokens());
+            }
         }
 
         return sb.toString();
@@ -235,33 +260,5 @@ public class Evaluator
                 QuestionAnswerProblemType.class);
         return QuestionAnswerProblemFactory.getQuestionAnswerProblemById(
                 goldQuestionAnswerProblem.getQuestionAnswerProblemId());
-    }
-
-    private void debugPrint(QuestionAnswerProblem questionAnswerProblem)
-    {
-        QuestionAnswerPair pair1 = questionAnswerProblem.getPair1();
-        QuestionAnswerPair pair2 = questionAnswerProblem.getPair2();
-        GeneralPipelineUtils.printEvaluationResult(
-                "QuestionAnswerProblem questionText: " + questionAnswerProblem.getQuestionText());
-        GeneralPipelineUtils.printEvaluationResult(
-                "QuestionAnswerProblem Pair1 questionText: " + pair1.getQuestionText());
-        GeneralPipelineUtils.printEvaluationResult(
-                "QuestionAnswerProblem Pair1 questionText: " + pair2.getQuestionText());
-        GeneralPipelineUtils.printEvaluationResult(
-                "QuestionAnswerProblem answerText1: " + questionAnswerProblem.getAnswerText1());
-        GeneralPipelineUtils
-                .printEvaluationResult("QuestionAnswerPair1 answerText: " + pair1.getAnswerText());
-        GeneralPipelineUtils.printEvaluationResult(
-                "QuestionAnswerProblem answerText2: " + questionAnswerProblem.getAnswerText2());
-        GeneralPipelineUtils
-                .printEvaluationResult("QuestionAnswerPair2 answerText: " + pair2.getAnswerText());
-        GeneralPipelineUtils.printEvaluationResult("QuestionAnswerProblem IDCorrectAnswer: "
-                + questionAnswerProblem.getIDCorrectAnswer());
-        GeneralPipelineUtils
-                .printEvaluationResult("QuestionAnswerPair1 id: " + pair1.getAnswer().getId()
-                        + " answer is correct: " + pair1.getAnswer().isCorrect());
-        GeneralPipelineUtils
-                .printEvaluationResult("QuestionAnswerPair1 id: " + pair2.getAnswer().getId()
-                        + " answer is correct: " + pair2.getAnswer().isCorrect());
     }
 }

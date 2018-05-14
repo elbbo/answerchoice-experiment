@@ -20,6 +20,11 @@ public class SimpleJWeb1TMeasure
 {
     private static final String MEASURE_METHOD_NAME = "SimpleJWeb1TMeasure";
 
+    public SimpleJWeb1TMeasure()
+    {
+        super();
+    }
+
     @Override
     public QuestionAnswerProblem measureSimilarity(CAS aCAS,
             QuestionAnswerProblem questionAnswerProblem)

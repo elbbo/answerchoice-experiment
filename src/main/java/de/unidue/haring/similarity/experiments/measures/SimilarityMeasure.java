@@ -26,12 +26,19 @@ public class SimilarityMeasure
     extends AbstractSimilarityMeasure
 {
     private static final String MEASURE_METHOD_NAME = "DefaultSimilarityMeasure";
+    private static List<String> missingEmbeddingAnnotations;
+    private static List<String> totalTokens;
+
+    public SimilarityMeasure()
+    {
+        missingEmbeddingAnnotations = new ArrayList<String>();
+        totalTokens = new ArrayList<String>();
+    }
 
     @Override
     public QuestionAnswerProblem measureSimilarity(CAS aCas,
             QuestionAnswerProblem questionAnswerProblem)
     {
-        System.out.println("Default similarity measure.");
         return questionAnswerProblem;
     }
 
@@ -156,8 +163,19 @@ public class SimilarityMeasure
                     s.getEnd());
             GeneralPipelineUtils.addLemmaListToUsedWordSet(tokenOfSentence);
             for (Token token : tokenOfSentence) {
-                embeddingsAnnotationsList.add(JCasUtil.selectCovered(WordEmbedding.class, token)
-                        .get(0).getWordEmbedding().toArray());
+                if (!totalTokens.contains(token.getCoveredText())) {
+                    totalTokens.add(token.getCoveredText());
+                }
+                try {
+                    embeddingsAnnotationsList.add(JCasUtil.selectCovered(WordEmbedding.class, token)
+                            .get(0).getWordEmbedding().toArray());
+                }
+                catch (IndexOutOfBoundsException e) {
+                    if (!missingEmbeddingAnnotations.contains(token.getCoveredText())) {
+                        missingEmbeddingAnnotations.add(token.getCoveredText());
+                    }
+                }
+
             }
         }
         return embeddingsAnnotationsList;
@@ -206,6 +224,16 @@ public class SimilarityMeasure
             }
         }
         return tokenList;
+    }
+
+    public List<String> getTotalTokens()
+    {
+        return totalTokens;
+    }
+
+    public List<String> getMissingEmbeddingsAnnotation()
+    {
+        return missingEmbeddingAnnotations;
     }
 
     @Override

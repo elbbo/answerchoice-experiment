@@ -11,11 +11,15 @@ import de.unidue.haring.similarity.experiments.types.QuestionAnswerPair;
 public class EmbeddingsSimilarityMeasure
     extends SimilarityMeasure
 {
+    public EmbeddingsSimilarityMeasure()
+    {
+        super();
+    }
+
     /**
      * Computes the cosine similarity of given vector lists.
      * 
-     * @param pair
-     *            the QuestionAnswerPair
+     * @param pair the QuestionAnswerPair
      * @return the cosine similarity value
      */
     protected double computeCosineSimilarity(List<float[]> listVector1, List<float[]> listVector2)
@@ -35,8 +39,7 @@ public class EmbeddingsSimilarityMeasure
      * Computes the average of a given vector list. Precondition: the list contains more than one
      * element.
      * 
-     * @param embeddingsList
-     *            list containing word embeddings of a given sentence
+     * @param embeddingsList list containing word embeddings of a given sentence
      * @return the average vector
      */
     private INDArray computeVectorAverage(List<float[]> embeddingsList)

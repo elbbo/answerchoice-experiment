@@ -32,8 +32,7 @@ public class GeneralPipelineUtils
     /**
      * Writes an string to evaluation results file and System.out
      * 
-     * @param w
-     *            the text
+     * @param w the text
      */
     public static void printEvaluationResult(String w)
     {
@@ -50,6 +49,9 @@ public class GeneralPipelineUtils
         }
     }
 
+    /**
+     * Deletes the evaluation results file, if exists
+     */
     public static void deleteEvaluationResultsFileIfExists()
     {
         try {
@@ -64,8 +66,7 @@ public class GeneralPipelineUtils
     /**
      * Processes every lemma of the document and adds it to the set if necessary.
      * 
-     * @param lemmaList
-     *            list containing the lemmata
+     * @param lemmaList list containing the lemmata
      */
     public static void addLemmaListToUsedWordSet(List<Token> lemmaList)
     {
@@ -78,8 +79,7 @@ public class GeneralPipelineUtils
     /**
      * Processes every word of the document text and adds it to the set if necessary.
      * 
-     * @param documentText
-     *            the document text
+     * @param documentText the document text
      */
     public static void addDocumentTextToUsedWordSet(String documentText)
     {
@@ -90,7 +90,7 @@ public class GeneralPipelineUtils
     }
 
     /**
-     * Writes the used words to a file.
+     * Writes used words to a file.
      */
     public static void writeUsedWordsToFile()
     {
@@ -123,6 +123,24 @@ public class GeneralPipelineUtils
         }
     }
 
+    /**
+     * Writes any given text to a file. Mainly used for debug purposes.
+     * 
+     * @param w
+     *            the text
+     */
+    public static void writeToFileWithFileName(String w, String filePath, String fileName)
+    {
+        try (Writer writer = new BufferedWriter(new OutputStreamWriter(
+                new FileOutputStream(filePath + fileName +".txt", true),
+                "utf-8"))) {
+            writer.write(w + "\n");
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
     /**
      * Load the used words from a file.
      */

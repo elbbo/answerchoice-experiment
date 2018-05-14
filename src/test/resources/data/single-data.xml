@@ -1,0 +1,32 @@
+<?xml version="1.0" ?>
+<!DOCTYPE data SYSTEM "MCScript.dtd">
+<data>
+	<instance id="346" scenario="applying band aid2">
+	<text>dog</text>
+		<question id="1" text="How did they cook the fish?" type="text">
+			<answer correct="True" id="0" text="author"/>
+			<answer correct="False" id="1" text="cart"/>
+		</question>
+	</instance>
+	<instance id="346" scenario="applying band aid2">
+	<text>paint</text>
+		<question id="1" text="cook" type="text">
+			<answer correct="True" id="0" text="bake"/>
+			<answer correct="False" id="1" text="fried"/>
+		</question>
+	</instance>
+	<instance id="346" scenario="applying band aid2">
+	<text>paint</text>
+		<question id="1" text="fish" type="text">
+			<answer correct="True" id="0" text="bake"/>
+			<answer correct="False" id="1" text="fried"/>
+		</question>
+	</instance>
+	<instance id="346" scenario="applying band aid2">
+	<text>paint</text>
+		<question id="1" text="Why did they put on the band aid?" type="text">
+			<answer correct="True" id="0" text="brush"/>
+			<answer correct="False" id="1" text="look"/>
+		</question>
+	</instance>
+</data>

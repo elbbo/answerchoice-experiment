@@ -10,6 +10,11 @@ public class RandomSimilarityMeasure
 {
     private static final String MEASURE_METHOD_NAME = "RandomSimilarityMeasure";
 
+    public RandomSimilarityMeasure()
+    {
+        super();
+    }
+
     @Override
     public QuestionAnswerProblem measureSimilarity(CAS aCAS,
             QuestionAnswerProblem questionAnswerProblem)

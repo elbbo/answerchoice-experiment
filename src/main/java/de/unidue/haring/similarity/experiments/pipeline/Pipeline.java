@@ -29,10 +29,10 @@ public class Pipeline
         GeneralPipelineUtils.deleteEvaluationResultsFileIfExists();
         prepareEmbeddingsMap();
 
-        // runPipelineWithAllEmbeddings("src/test/resources/data/extracted-test-data.xml");
-
         // Run pipeline for test data all
         runPipelineWithAllEmbeddings("src/test/resources/data/test-data.xml");
+        // Run pipeline for conceptual data
+        runPipelineWithAllEmbeddings("src/test/resources/data/testdata_subset_conceptual.xml");
         // Run pipeline for test data yes/no questions only
         runPipelineWithAllEmbeddings("src/test/resources/data/testdata_subset_yes_no.xml");
         // Run pipeline for test data without yes/no questions
@@ -137,7 +137,6 @@ public class Pipeline
     private static void prepareEmbeddingsMap()
     {
         embeddingsMap = new LinkedHashMap<String, Boolean>();
-        // embeddingsMap.put("src/test/resources/embeddings/embeddings_test.txt", Boolean.valueOf(true));
         embeddingsMap.put("src/test/resources/embeddings/glove.6B.50d.txt", Boolean.valueOf(true));
         embeddingsMap.put("src/test/resources/embeddings/glove.6B.100d.txt", Boolean.valueOf(true));
         embeddingsMap.put("src/test/resources/embeddings/glove.6B.200d.txt", Boolean.valueOf(true));

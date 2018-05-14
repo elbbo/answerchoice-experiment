@@ -10,6 +10,11 @@ public class QuestionToAnswerSimilarityMeasure
 {
     private static final String MEASURE_METHOD_NAME = "QuestionToAnswerSimilarityMeasure";
 
+    public QuestionToAnswerSimilarityMeasure()
+    {
+        super();
+    }
+
     @Override
     public QuestionAnswerProblem measureSimilarity(CAS aCAS,
             QuestionAnswerProblem questionAnswerProblem)
@@ -26,7 +31,7 @@ public class QuestionToAnswerSimilarityMeasure
 
         setSemanticRelatedness(MEASURE_METHOD_NAME, questionAnswerPair1, questionAnswerPair2,
                 cosineSimPair1, cosineSimPair2);
-        
+
         return questionAnswerProblem;
     }
 

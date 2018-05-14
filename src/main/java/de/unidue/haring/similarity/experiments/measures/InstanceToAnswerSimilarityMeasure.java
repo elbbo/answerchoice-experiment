@@ -4,12 +4,16 @@ import org.apache.uima.cas.CAS;
 
 import de.unidue.haring.similarity.experiments.types.QuestionAnswerPair;
 import de.unidue.haring.similarity.experiments.types.QuestionAnswerProblem;
-import de.unidue.haring.similarity.experiments.utils.GeneralPipelineUtils;
 
 public class InstanceToAnswerSimilarityMeasure
     extends EmbeddingsSimilarityMeasure
 {
     private static final String MEASURE_METHOD_NAME = "InstanceToAnswerSimilarityMeasure";
+
+    public InstanceToAnswerSimilarityMeasure()
+    {
+        super();
+    }
 
     @Override
     public QuestionAnswerProblem measureSimilarity(CAS aCAS,

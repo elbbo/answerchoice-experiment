@@ -4,10 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -19,6 +15,9 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 import de.unidue.haring.similarity.experiments.types.Instance;
@@ -27,11 +26,13 @@ import de.unidue.haring.similarity.experiments.types.QuestionAnswerProblem;
 public class SubsetGenerator
 {
     private static final String FILE_PATH = "src/test/resources/data/";
+    private static final String INPUT_FILE_PATH = "src/test/resources/data/test-data.xml";
+    private static String fileName = "testdata_subset";
     private static List<Instance> iList;
 
     // True indicates QuestionAnswerProblem shell be filtered by question, otherwise filtered by
     // answer
-    private static final boolean FILTER = true;
+    private static final boolean FILTER = false;
 
     public static void main(String args[])
     {
@@ -41,10 +42,10 @@ public class SubsetGenerator
 
             InstanceHandler iHandler = new InstanceHandler();
 
-            saxParser.parse(new File("src/test/resources/data/test-data.xml"), iHandler);
+            saxParser.parse(new File(INPUT_FILE_PATH), iHandler);
             iList = iHandler.getInstanceList();
 
-            String[] keywords = {"who", "whose" };
+            String[] keywords = { "who" };
             writeXmlFile(FILTER, iList, keywords);
         }
         catch (SAXException | IOException | ParserConfigurationException e) {
@@ -82,7 +83,7 @@ public class SubsetGenerator
                 for (QuestionAnswerProblem qp : i.getqList()) {
                     // handle question type
                     match = false;
-                    
+
                     if (filter) {
                         for (String keyword : keywords) {
                             if (qp.getQuestionText().toLowerCase().startsWith(keyword))
@@ -97,7 +98,7 @@ public class SubsetGenerator
                             }
                         }
                     }
-                    if (!match) {
+                    if (match) {
                         continue;
                     }
 
@@ -162,7 +163,6 @@ public class SubsetGenerator
             Transformer transformer = transformerFactory.newTransformer();
             DOMSource source = new DOMSource(doc);
 
-            String fileName = "testdata_subset";
             for (String keyword : keywords) {
                 fileName += "_" + keyword;
             }
