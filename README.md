@@ -1,6 +1,7 @@
 # Answerchoice-Experiment
 A model for processing the MCScript data set provided by the [SemEval-2018 Task 11: Machine Comprehension using Commonsense Knowledge](https://competitions.codalab.org/competitions/17184).
 
+## Configuration
 Different variations of Word Embeddings can be integrated into the model. Please make sure they are in the appropriate directory:
   src/test/resources/embeddings/
 
