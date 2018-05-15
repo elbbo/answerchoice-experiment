@@ -4,12 +4,12 @@ A model for processing the MCScript data set provided by the [SemEval-2018 Task 
 Different variations of Word Embeddings can be integrated into the model. Please make sure they are in the appropriate directory:
   src/test/resources/embeddings/
 
-For the experiment based on this model, several variations of pre-trained Word Embeddings were used. The used files can be obtained here:
+For the experiment, several variations of pre-trained Word Embeddings were used. The used files can be obtained here:
   [GloVe](https://nlp.stanford.edu/projects/glove/)
   [Word2Vec](https://drive.google.com/file/d/0B7XkCwpI5KDYNlNUTTlSS21pQmM/edit)
   [fastText](https://github.com/facebookresearch/fastText/blob/master/pretrained-vectors.md)
 
-Some of the methods use Google Web 1T 5-gram data set. Please ensure the files are stored in the directory provided for that purpose:
+Some of the used methods are based on Google Web 1T 5-gram data set. Please ensure the files are stored in the directory provided for that purpose:
   src/test/resources/Web1t/
   
 The corresponding files can be found here:
