@@ -138,12 +138,15 @@ public class Pipeline
     {
         embeddingsMap = new LinkedHashMap<String, Boolean>();
         embeddingsMap.put("src/test/resources/embeddings/glove.6B.50d.txt", Boolean.valueOf(true));
-        embeddingsMap.put("src/test/resources/embeddings/glove.6B.100d.txt", Boolean.valueOf(true));
-        embeddingsMap.put("src/test/resources/embeddings/glove.6B.200d.txt", Boolean.valueOf(true));
-        embeddingsMap.put("src/test/resources/embeddings/glove.6B.300d.txt", Boolean.valueOf(true));
-        embeddingsMap.put("src/test/resources/embeddings/glove.42B.300d.txt", Boolean.valueOf(true));
-        embeddingsMap.put("src/test/resources/embeddings/glove.840B.300d.txt", Boolean.valueOf(false));
-        embeddingsMap.put("src/test/resources/embeddings/GoogleNews-vectors-negative300.txt", Boolean.valueOf(false));
-        embeddingsMap.put("src/test/resources/embeddings/wiki.de.vec", Boolean.valueOf(true));
+        /**
+         * The attached version only includes glove.6B.50d Word Embeddings
+         */
+//        embeddingsMap.put("src/test/resources/embeddings/glove.6B.100d.txt", Boolean.valueOf(true));
+//        embeddingsMap.put("src/test/resources/embeddings/glove.6B.200d.txt", Boolean.valueOf(true));
+//        embeddingsMap.put("src/test/resources/embeddings/glove.6B.300d.txt", Boolean.valueOf(true));
+//        embeddingsMap.put("src/test/resources/embeddings/glove.42B.300d.txt", Boolean.valueOf(true));
+//        embeddingsMap.put("src/test/resources/embeddings/glove.840B.300d.txt", Boolean.valueOf(false));
+//        embeddingsMap.put("src/test/resources/embeddings/GoogleNews-vectors-negative300.txt", Boolean.valueOf(false));
+        // embeddingsMap.put("src/test/resources/embeddings/wiki.de.vec", Boolean.valueOf(true));
     }
 }
